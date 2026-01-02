@@ -23,17 +23,15 @@ interface SimulationViewProps {
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-// ============= SIMULASI SENYAWA (Element Selector) =============
 function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComplete: () => void; onBack: () => void }) {
   const [leftElement, setLeftElement] = useState("Hydrogen");
   const [rightElement, setRightElement] = useState("Oxygen");
-  const [distance, setDistance] = useState(120); // Reduced initial distance so atoms are visible
+  const [distance, setDistance] = useState(120); 
   const [interaction, setInteraction] = useState("Attractive");
   const [showLeftPicker, setShowLeftPicker] = useState(false);
   const [showRightPicker, setShowRightPicker] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
 
-  // Animated positions for atoms
   const leftPos = useRef(new Animated.Value(-distance / 2)).current;
   const rightPos = useRef(new Animated.Value(distance / 2)).current;
 
@@ -104,7 +102,6 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
     setInteraction(classify(newDist));
   };
 
-  // Calculate energy level percentage
   const energyPercentage = Math.max(
     0,
     Math.min(
@@ -360,13 +357,12 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
   );
 }
 
-// ============= SIMULASI PEMBENTUKAN IKATAN (Draggable Atoms with Force) =============
 function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: any; onComplete: () => void; onBack: () => void }) {
   const [isCompleting, setIsCompleting] = useState(false);
   const [interaction, setInteraction] = useState("Neutral");
   const [interactionColor, setInteractionColor] = useState("#9ca3af");
 
-  // Calculate canvas width - use smaller width for web to fit in container
+  // Calculate canvas width 
   const maxContainerWidth = isWeb ? 600 : SCREEN_WIDTH;
   const canvasWidth = Math.min(SCREEN_WIDTH - 32, maxContainerWidth - 32);
   const canvasHeight = 350;

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Dimensions, Linking, Image, Animated, Easing, Platform } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Dimensions, Linking, Image, Animated, Easing, Platform, ImageSourcePropType } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme, ThemeColors } from "../../lib/ThemeContext";
@@ -7,6 +7,25 @@ import { WebConstrainedScrollView } from "../../components/WebContainer";
 
 const { width } = Dimensions.get("window");
 const isWeb = Platform.OS === "web";
+
+// Import images directly for better web compatibility
+const matthewPhoto = require("../../assets/images/matthew.png");
+const darrylPhoto = require("../../assets/images/darryl.png");
+const chemlabLogo = require("../../assets/images/chemlab.png");
+const aboutIcon = require("../../assets/images/about.png");
+
+// Helper function to get image URI for web
+const getImageSource = (source: ImageSourcePropType): string => {
+  if (typeof source === 'number') {
+    // This is a require() result
+    const resolved = Image.resolveAssetSource(source);
+    return resolved?.uri || '';
+  }
+  if (typeof source === 'object' && source !== null && 'uri' in source) {
+    return (source as { uri: string }).uri;
+  }
+  return '';
+};
 
 // Animated Floating Icon Component
 const FloatingIcon = ({ 
@@ -209,9 +228,9 @@ const PathwayPreviewCard = ({
 );
 
 // Photo placeholders mapping
-const teamPhotos: { [key: string]: any } = {
-  matthew: require("../../assets/images/matthew.png"),
-  darryl: require("../../assets/images/darryl.png"),
+const teamPhotos: { [key: string]: ImageSourcePropType } = {
+  matthew: matthewPhoto,
+  darryl: darrylPhoto,
 };
 
 // Team Member Card
@@ -247,11 +266,19 @@ const TeamMemberCard = ({
       marginBottom: 12,
       overflow: "hidden",
     }}>
-      <Image
-        source={teamPhotos[photoKey]}
-        style={{ width: 70, height: 70 }}
-        resizeMode="cover"
-      />
+      {isWeb ? (
+        <img
+          src={getImageSource(teamPhotos[photoKey])}
+          style={{ width: 70, height: 70, objectFit: "cover" }}
+          alt={name}
+        />
+      ) : (
+        <Image
+          source={teamPhotos[photoKey]}
+          style={{ width: 70, height: 70 }}
+          resizeMode="cover"
+        />
+      )}
     </View>
     <Text style={{ 
       color: theme.textPrimary, 
@@ -300,11 +327,19 @@ export default function AboutScreen() {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <Image 
-            source={require("../../assets/images/about.png")} 
-            style={{ width: 32, height: 32 }} 
-            resizeMode="contain"
-          />
+          {isWeb ? (
+            <img
+              src={getImageSource(aboutIcon)}
+              style={{ width: 32, height: 32, objectFit: "contain" }}
+              alt="About"
+            />
+          ) : (
+            <Image 
+              source={aboutIcon} 
+              style={{ width: 32, height: 32 }} 
+              resizeMode="contain"
+            />
+          )}
           <Text style={{ color: theme.textPrimary, fontSize: 28, fontWeight: "bold" }}>
             About ChemLab
           </Text>
@@ -548,11 +583,19 @@ export default function AboutScreen() {
               marginBottom: 16,
             }}
           >
-            <Image 
-              source={require("../../assets/images/chemlab.png")} 
-              style={{ width: 28, height: 28 }} 
-              resizeMode="contain"
-            />
+            {isWeb ? (
+              <img
+                src={getImageSource(chemlabLogo)}
+                style={{ width: 28, height: 28, objectFit: "contain" }}
+                alt="ChemLab Logo"
+              />
+            ) : (
+              <Image 
+                source={chemlabLogo} 
+                style={{ width: 28, height: 28 }} 
+                resizeMode="contain"
+              />
+            )}
             <Text style={{ color: theme.textPrimary, fontSize: 18, fontWeight: "bold" }}>
               ChemLab
             </Text>

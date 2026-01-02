@@ -39,18 +39,15 @@ export default function FinalTestView({
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(1500); // 25 minutes
+  const [timeLeft, setTimeLeft] = useState(1500); 
   const [testStarted, setTestStarted] = useState(false);
 
-  // Get questions from pathway.content (same as quiz system)
   const questions: Question[] = pathway.content?.questions || [];
 
   useEffect(() => {
-    // Questions are loaded from pathway.content, just set loading to false
     setLoading(false);
   }, []);
 
-  // Timer effect
   useEffect(() => {
     if (!testStarted || showResults) return;
 
@@ -94,7 +91,6 @@ export default function FinalTestView({
   };
 
   const handleSubmit = async () => {
-    // Calculate score
     let correctCount = 0;
     questions.forEach((q, index) => {
       if (answers[index] === q.correct_answer) {
@@ -108,7 +104,6 @@ export default function FinalTestView({
 
     // Save to database
     try {
-      // Save answers to quiz_answers table (for pembahasan in results page)
       for (let index = 0; index < questions.length; index++) {
         const q = questions[index];
         const userAnswer = answers[index];
@@ -118,7 +113,6 @@ export default function FinalTestView({
           ? `✓ Jawaban Anda benar!\n\n${q.explanation || "Selamat, jawaban Anda tepat!"}`
           : `✗ Jawaban Anda salah.\n\nJawaban yang benar adalah: ${q.options[q.correct_answer]}\n\n${q.explanation || "Silakan pelajari kembali materi ini."}`;
 
-        // Delete existing answer first
         await supabase
           .from("quiz_answers")
           .delete()
@@ -138,7 +132,7 @@ export default function FinalTestView({
         });
       }
 
-      // Update user_pathway_progress with score (same as quiz)
+      // Update user_pathway_progress with score 
       await supabase
         .from("user_pathway_progress")
         .update({ score: calculatedScore, status: "completed" })
@@ -148,14 +142,12 @@ export default function FinalTestView({
       console.error("Error saving results:", error);
     }
 
-    // Don't call onComplete here - let user click button to go back
   };
 
   const confirmSubmit = () => {
     const unansweredCount = questions.length - Object.keys(answers).length;
     
     if (isWeb) {
-      // For web, use window.confirm instead of Alert.alert
       let message = unansweredCount > 0 
         ? `Masih ada ${unansweredCount} soal yang belum dijawab. Yakin ingin submit?`
         : "Yakin ingin submit tes final?";
@@ -164,7 +156,6 @@ export default function FinalTestView({
         handleSubmit();
       }
     } else {
-      // For mobile, use Alert.alert
       if (unansweredCount > 0) {
         Alert.alert(
           "Konfirmasi",
