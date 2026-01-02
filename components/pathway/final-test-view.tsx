@@ -39,7 +39,7 @@ export default function FinalTestView({
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+  const [timeLeft, setTimeLeft] = useState(1500); // 25 minutes
   const [testStarted, setTestStarted] = useState(false);
 
   // Get questions from pathway.content (same as quiz system)
