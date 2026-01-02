@@ -12,6 +12,7 @@ import {
   Modal,
   TextInput,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -270,21 +271,29 @@ export default function SettingsScreen() {
   };
 
   const handleSignOut = async () => {
-    Alert.alert(
-      "Keluar",
-      "Apakah Anda yakin ingin keluar dari akun?",
-      [
-        { text: "Batal", style: "cancel" },
-        { 
-          text: "Keluar", 
-          style: "destructive",
-          onPress: async () => {
-            await signOut();
-            router.replace("/login");
-          }
-        },
-      ]
-    );
+    if (Platform.OS === "web") {
+      const confirmed = window.confirm("Apakah Anda yakin ingin keluar dari akun?");
+      if (confirmed) {
+        await signOut();
+        router.replace("/login");
+      }
+    } else {
+      Alert.alert(
+        "Keluar",
+        "Apakah Anda yakin ingin keluar dari akun?",
+        [
+          { text: "Batal", style: "cancel" },
+          { 
+            text: "Keluar", 
+            style: "destructive",
+            onPress: async () => {
+              await signOut();
+              router.replace("/login");
+            }
+          },
+        ]
+      );
+    }
   };
 
   const handleResetProgress = () => {
