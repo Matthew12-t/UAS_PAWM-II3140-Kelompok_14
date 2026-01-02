@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, Platform } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { supabase } from "../../lib/supabase";
 import * as Linking from "expo-linking";
 
+const isWeb = Platform.OS === 'web';
+
 export default function AuthCallbackScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const [message, setMessage] = useState("Memverifikasi email...");
+  const [message, setMessage] = useState("Memverifikasi...");
 
   useEffect(() => {
     handleAuthCallback();
@@ -17,8 +19,16 @@ export default function AuthCallbackScreen() {
 
   const handleAuthCallback = async () => {
     try {
-      // Get the full URL
-      const url = await Linking.getInitialURL();
+      let url: string | null = null;
+
+      // Get URL differently for web vs mobile
+      if (isWeb && typeof window !== 'undefined') {
+        // On web, get the full URL including hash
+        url = window.location.href;
+      } else {
+        // On mobile, use Linking
+        url = await Linking.getInitialURL();
+      }
       
       if (url) {
         // Parse the URL to extract tokens

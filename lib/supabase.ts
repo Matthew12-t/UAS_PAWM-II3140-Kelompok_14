@@ -3,29 +3,65 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
+import { Platform } from 'react-native';
 
 // Credentials sama dengan web (apps/web/.env)
 const supabaseUrl = 'https://zmwiyvaxmllhrxuhljlx.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inptd2l5dmF4bWxsaHJ4dWhsamx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MTI1ODIsImV4cCI6MjA3NjI4ODU4Mn0.x6kqZqGLLb-lUmnNF4pXyFfiuAxd1oSmzZTikuJRqWs';
 
-// Get the redirect URL for OAuth
-const redirectUrl = AuthSession.makeRedirectUri({
-  scheme: 'chemlab',
-  path: 'auth/callback',
-});
+// Detect if running on web
+const isWeb = Platform.OS === 'web';
+
+// Get the redirect URL for OAuth - different for web vs mobile
+const getRedirectUrl = () => {
+  if (isWeb) {
+    // For web, use the current origin
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}/auth/callback`;
+    }
+    return 'http://localhost:8081/auth/callback';
+  }
+  // For mobile, use the custom scheme
+  return AuthSession.makeRedirectUri({
+    scheme: 'chemlab',
+    path: 'auth/callback',
+  });
+};
+
+const redirectUrl = getRedirectUrl();
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false,
+    // Enable detectSessionInUrl for web to handle OAuth callback
+    detectSessionInUrl: isWeb,
   },
 });
 
 // Google OAuth Sign In
 export const signInWithGoogle = async () => {
   try {
+    // For web platform, use standard OAuth redirect
+    if (isWeb) {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+          // Don't skip browser redirect on web
+          skipBrowserRedirect: false,
+        },
+      });
+
+      if (error) throw error;
+      
+      // On web, this will redirect the browser automatically
+      // The session will be handled when the user returns to the callback page
+      return { data, error: null };
+    }
+
+    // For mobile platforms, use WebBrowser
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
