@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "ChemLab Mobile",
+    "slug": "chemlab-mobile",
+    "scheme": "chemlab",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/chemlab.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/chemlab.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#4F46E5"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.chemlab.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/chemlab.png",
+        "backgroundColor": "#4F46E5"
+      },
+      "package": "com.chemlab.mobile"
+    },
+    "web": {
+      "favicon": "./assets/chemlab.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-splash-screen"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3d6bedea-8ff2-4a22-8459-fa49c7ed43b6"
+      }
+    }
+  }
+}

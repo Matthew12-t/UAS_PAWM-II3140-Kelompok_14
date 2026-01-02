@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Menggunakan variabel dari file globals.css yang kamu upload */
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 15 23 42;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
+    --primary: 79 70 229; /* Indigo 600 converted for mobile safety */
+    --primary-foreground: 255 255 255;
+    --input: 226 232 240;
+    --ring: 79 70 229;
+    --radius: 10px;
+  }
+}
