@@ -14,6 +14,7 @@ import { useRouter, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { supabase, getCurrentUser, signOut } from "../../lib/supabase";
 import { useTheme, ThemeColors } from "../../lib/ThemeContext";
+import { WebConstrainedScrollView } from "../../components/WebContainer";
 
 // Animated Floating Icon Component
 const FloatingIcon = ({ 
@@ -312,13 +313,14 @@ export default function DashboardScreen() {
         <Text style={{ fontSize: 13, color: theme.textSecondary, marginTop: 4 }}>Virtual Chemistry Laboratory</Text>
       </View>
 
-      <ScrollView 
+      <WebConstrainedScrollView 
         style={{ flex: 1 }}
         contentContainerStyle={{ padding: 20 }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.textSecondary} />
         }
         showsVerticalScrollIndicator={false}
+        maxWidth={1000}
       >
         {/* Welcome Section */}
         <View style={{ marginBottom: 24 }}>
@@ -421,7 +423,7 @@ export default function DashboardScreen() {
             ))
           )}
         </View>
-      </ScrollView>
+      </WebConstrainedScrollView>
     </LinearGradient>
   );
 }

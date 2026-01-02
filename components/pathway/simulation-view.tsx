@@ -8,8 +8,11 @@ import {
   Animated,
   PanResponder,
   StyleSheet,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+
+const isWeb = Platform.OS === "web";
 
 interface SimulationViewProps {
   pathway: any;
@@ -122,7 +125,7 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
       colors={["#0f172a", "#312e81", "#1e1b4b"]}
       style={{ flex: 1 }}
     >
-      {/* Header - Same as other pathways */}
+      {/* Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         paddingTop: 50,
@@ -139,7 +142,15 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
         </Text>
       </View>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+      {/* Content with maxWidth */}
+      <ScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={{ 
+          padding: 16,
+          alignItems: isWeb ? "center" : undefined 
+        }}
+      >
+        <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
         {/* Main Layout - Row for Energy + Simulation */}
         <View style={styles.mainRow}>
         {/* Potential Energy Bar */}
@@ -342,8 +353,9 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
             </Text>
           </LinearGradient>
         </TouchableOpacity>
-      </View>
-    </ScrollView>
+        </View>
+        </View>
+      </ScrollView>
     </LinearGradient>
   );
 }
@@ -354,7 +366,9 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
   const [interaction, setInteraction] = useState("Neutral");
   const [interactionColor, setInteractionColor] = useState("#9ca3af");
 
-  const canvasWidth = SCREEN_WIDTH - 32;
+  // Calculate canvas width - use smaller width for web to fit in container
+  const maxContainerWidth = isWeb ? 600 : SCREEN_WIDTH;
+  const canvasWidth = Math.min(SCREEN_WIDTH - 32, maxContainerWidth - 32);
   const canvasHeight = 350;
   const atomR = 24;
   const bias = 100;
@@ -451,7 +465,7 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
       colors={["#0f172a", "#312e81", "#1e1b4b"]}
       style={{ flex: 1 }}
     >
-      {/* Header - Same as other pathways */}
+      {/* Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         paddingTop: 50,
@@ -468,7 +482,15 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
         </Text>
       </View>
 
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16 }}>
+      {/* Content with maxWidth */}
+      <ScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={{ 
+          padding: 16,
+          alignItems: isWeb ? "center" : undefined 
+        }}
+      >
+        <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
         {/* Canvas Container */}
         <View style={styles.canvasContainer}>
           {/* Header */}
@@ -695,6 +717,7 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
               </Text>
             </LinearGradient>
           </TouchableOpacity>
+        </View>
         </View>
       </ScrollView>
     </LinearGradient>

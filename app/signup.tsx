@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "../components/ui/input";
 import { supabase, signInWithGoogle } from "../lib/supabase";
 import * as WebBrowser from 'expo-web-browser';
+import { WebConstrainedScrollView } from "../components/WebContainer";
 import * as AuthSession from 'expo-auth-session';
 
 // Warm up browser untuk Google OAuth
@@ -156,7 +157,7 @@ export default function SignupScreen() {
       if (error) {
         const errorMessage = (error as any).message || 'Google sign up failed';
         setError(errorMessage);
-      } else if (data?.session) {
+      } else if ((data as any)?.session) {
         router.replace("/(tabs)");
       }
     } catch (err: any) {
@@ -185,10 +186,10 @@ export default function SignupScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView 
+      <WebConstrainedScrollView 
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 20 }}
-        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        maxWidth={420}
       >
         {/* Header */}
         <View style={{ alignItems: "center", marginBottom: 28 }}>
@@ -347,7 +348,7 @@ export default function SignupScreen() {
             </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
+      </WebConstrainedScrollView>
     </LinearGradient>
   );
 }

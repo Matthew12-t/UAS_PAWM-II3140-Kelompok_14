@@ -4,10 +4,13 @@ import {
   Text, 
   ScrollView, 
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { supabase } from "../../lib/supabase";
+
+const isWeb = Platform.OS === "web";
 
 interface QuizViewProps {
   pathway: any;
@@ -125,6 +128,7 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
         colors={["#0f172a", "#312e81", "#1e1b4b"]}
         style={{ flex: 1 }}
       >
+        {/* Header - Full Width */}
         <View style={{
           backgroundColor: "rgba(255,255,255,0.1)",
           paddingTop: 50,
@@ -138,10 +142,15 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
           </Text>
         </View>
 
+        {/* Content with maxWidth */}
         <ScrollView 
           style={{ flex: 1 }}
-          contentContainerStyle={{ padding: 20 }}
+          contentContainerStyle={{ 
+            padding: 20,
+            alignItems: isWeb ? "center" : undefined 
+          }}
         >
+          <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
           {/* Score Card */}
           <LinearGradient
             colors={passed ? ["#059669", "#10b981", "#34d399"] : ["#dc2626", "#ef4444", "#f87171"]}
@@ -234,6 +243,7 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
               </Text>
             </TouchableOpacity>
           </View>
+          </View>
         </ScrollView>
       </LinearGradient>
     );
@@ -248,7 +258,7 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
       colors={["#0f172a", "#312e81", "#1e1b4b"]}
       style={{ flex: 1 }}
     >
-      {/* Header */}
+      {/* Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         paddingTop: 50,
@@ -285,11 +295,16 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
         </View>
       </View>
 
+      {/* Content with maxWidth */}
       <ScrollView 
         style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 20 }}
+        contentContainerStyle={{ 
+          padding: 20,
+          alignItems: isWeb ? "center" : undefined 
+        }}
         showsVerticalScrollIndicator={false}
       >
+        <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
         {/* Question */}
         <View style={{
           backgroundColor: "rgba(255,255,255,0.1)",
@@ -404,6 +419,7 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
               </Text>
             </TouchableOpacity>
           )}
+        </View>
         </View>
       </ScrollView>
     </LinearGradient>

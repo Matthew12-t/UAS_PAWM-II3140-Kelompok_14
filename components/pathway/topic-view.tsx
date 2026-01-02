@@ -6,9 +6,13 @@ import {
   TouchableOpacity, 
   Dimensions,
   Linking,
-  Image
+  Image,
+  Platform
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { WebContentContainer } from "../WebContainer";
+
+const isWeb = Platform.OS === "web";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -51,7 +55,7 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
       colors={["#0f172a", "#312e81", "#1e1b4b"]}
       style={{ flex: 1 }}
     >
-      {/* Header */}
+      {/* Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         paddingTop: 50,
@@ -68,11 +72,16 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
         </Text>
       </View>
 
+      {/* Content with maxWidth */}
       <ScrollView 
         style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 20 }}
+        contentContainerStyle={{ 
+          padding: 20, 
+          alignItems: isWeb ? "center" : undefined 
+        }}
         showsVerticalScrollIndicator={false}
       >
+        <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
         {/* Description Card */}
         <View style={{
           backgroundColor: "rgba(99, 102, 241, 0.2)",
@@ -247,7 +256,8 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
             </Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+        </View>
+        </ScrollView>
     </LinearGradient>
   );
 }

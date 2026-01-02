@@ -6,9 +6,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { supabase } from "../../lib/supabase";
+
+const isWeb = Platform.OS === "web";
 
 interface FinalTestViewProps {
   pathway: any;
@@ -151,24 +154,36 @@ export default function FinalTestView({
   const confirmSubmit = () => {
     const unansweredCount = questions.length - Object.keys(answers).length;
     
-    if (unansweredCount > 0) {
-      Alert.alert(
-        "Konfirmasi",
-        `Masih ada ${unansweredCount} soal yang belum dijawab. Yakin ingin submit?`,
-        [
-          { text: "Batal", style: "cancel" },
-          { text: "Submit", onPress: handleSubmit }
-        ]
-      );
+    if (isWeb) {
+      // For web, use window.confirm instead of Alert.alert
+      let message = unansweredCount > 0 
+        ? `Masih ada ${unansweredCount} soal yang belum dijawab. Yakin ingin submit?`
+        : "Yakin ingin submit tes final?";
+      
+      if (window.confirm(message)) {
+        handleSubmit();
+      }
     } else {
-      Alert.alert(
-        "Konfirmasi",
-        "Yakin ingin submit tes final?",
-        [
-          { text: "Batal", style: "cancel" },
-          { text: "Submit", onPress: handleSubmit }
-        ]
-      );
+      // For mobile, use Alert.alert
+      if (unansweredCount > 0) {
+        Alert.alert(
+          "Konfirmasi",
+          `Masih ada ${unansweredCount} soal yang belum dijawab. Yakin ingin submit?`,
+          [
+            { text: "Batal", style: "cancel" },
+            { text: "Submit", onPress: handleSubmit }
+          ]
+        );
+      } else {
+        Alert.alert(
+          "Konfirmasi",
+          "Yakin ingin submit tes final?",
+          [
+            { text: "Batal", style: "cancel" },
+            { text: "Submit", onPress: handleSubmit }
+          ]
+        );
+      }
     }
   };
 
@@ -188,14 +203,14 @@ export default function FinalTestView({
   // Pre-test screen
   if (!testStarted) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 20 }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: isWeb ? "center" : undefined, padding: 20 }}>
         <View style={{
           backgroundColor: "rgba(255,255,255,0.1)",
           borderRadius: 20,
           padding: 24,
           alignItems: "center",
           width: "100%",
-          maxWidth: 340,
+          maxWidth: isWeb ? 400 : 340,
         }}>
           <Text style={{ fontSize: 60, marginBottom: 16 }}>📝</Text>
           <Text style={{ 
@@ -297,7 +312,7 @@ export default function FinalTestView({
           padding: 32,
           alignItems: "center",
           width: "100%",
-          maxWidth: 400,
+          maxWidth: isWeb ? 480 : 400,
         }}>
           <Text style={{ fontSize: 60, marginBottom: 16 }}>
             {passed ? "🎉" : "😔"}
@@ -406,7 +421,7 @@ export default function FinalTestView({
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Timer Header */}
+      {/* Timer Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         padding: 16,
@@ -429,7 +444,7 @@ export default function FinalTestView({
         </View>
       </View>
 
-      {/* Question Navigation Dots */}
+      {/* Question Navigation Dots - Full Width */}
       <ScrollView 
         horizontal 
         showsHorizontalScrollIndicator={false}
@@ -467,22 +482,29 @@ export default function FinalTestView({
         ))}
       </ScrollView>
 
-      {/* Question */}
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 20 }}>
-        <View style={{
-          backgroundColor: "rgba(255,255,255,0.1)",
-          borderRadius: 16,
+      {/* Question - with maxWidth */}
+      <ScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={{ 
           padding: 20,
-          marginBottom: 24,
-        }}>
-          <Text style={{ 
-            color: "white", 
-            fontSize: 18, 
-            lineHeight: 26 
+          alignItems: isWeb ? "center" : undefined 
+        }}
+      >
+        <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
+          <View style={{
+            backgroundColor: "rgba(255,255,255,0.1)",
+            borderRadius: 16,
+            padding: 20,
+            marginBottom: 24,
           }}>
-            {currentQuestion.question}
-          </Text>
-        </View>
+            <Text style={{ 
+              color: "white", 
+              fontSize: 18, 
+              lineHeight: 26 
+            }}>
+              {currentQuestion.question}
+            </Text>
+          </View>
 
         {/* Options */}
         {currentQuestion.options.map((option, index) => (
@@ -532,6 +554,7 @@ export default function FinalTestView({
             </Text>
           </TouchableOpacity>
         ))}
+        </View>
       </ScrollView>
 
       {/* Bottom Navigation */}

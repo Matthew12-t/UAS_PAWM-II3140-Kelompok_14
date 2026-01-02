@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { supabase, getCurrentUser } from "../../lib/supabase";
 import { useTheme, ThemeColors } from "../../lib/ThemeContext";
+import { WebConstrainedScrollView } from "../../components/WebContainer";
 
 // Stats Card Component
 const StatsCard = ({ 
@@ -515,13 +516,14 @@ export default function ResultsScreen() {
         <Text style={{ fontSize: 13, color: theme.textSecondary, marginTop: 4 }}>Pantau progress dan nilai Anda</Text>
       </View>
 
-      <ScrollView 
+      <WebConstrainedScrollView 
         style={{ flex: 1 }}
         contentContainerStyle={{ padding: 20 }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.textSecondary} />
         }
         showsVerticalScrollIndicator={false}
+        maxWidth={500}
       >
         {/* Info Banner */}
         <View style={{
@@ -619,7 +621,7 @@ export default function ResultsScreen() {
             ))
           )}
         </View>
-      </ScrollView>
+      </WebConstrainedScrollView>
 
       {/* Quiz Detail Modal */}
       <Modal

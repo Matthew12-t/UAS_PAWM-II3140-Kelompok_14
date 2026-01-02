@@ -89,7 +89,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <AudioProvider>
-        <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+        <View style={{ flex: 1, backgroundColor: '#0f172a' }} onLayout={onLayoutRootView}>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
             <Stack.Screen name="login" />

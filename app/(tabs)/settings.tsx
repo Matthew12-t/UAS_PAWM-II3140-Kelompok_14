@@ -19,6 +19,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { supabase, getCurrentUser, signOut } from "../../lib/supabase";
 import { useTheme, ThemeColors } from "../../lib/ThemeContext";
 import { useAudio } from "../../lib/AudioContext";
+import { WebConstrainedScrollView } from "../../components/WebContainer";
 
 // Animated Floating Icon Component
 const FloatingIcon = ({ 
@@ -416,10 +417,11 @@ export default function SettingsScreen() {
         <Text style={{ fontSize: 13, color: theme.textSecondary, marginTop: 4 }}>Kelola akun dan preferensi Anda</Text>
       </View>
 
-      <ScrollView 
+      <WebConstrainedScrollView 
         style={{ flex: 1 }}
         contentContainerStyle={{ padding: 20 }}
         showsVerticalScrollIndicator={false}
+        maxWidth={500}
       >
         {/* Profile Card */}
         <View style={{
@@ -551,7 +553,7 @@ export default function SettingsScreen() {
 
         {/* Bottom Spacing */}
         <View style={{ height: 40 }} />
-      </ScrollView>
+      </WebConstrainedScrollView>
 
       {/* Edit Profile Modal */}
       <Modal

@@ -1,10 +1,12 @@
 import React, { useRef, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Dimensions, Linking, Image, Animated, Easing } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Dimensions, Linking, Image, Animated, Easing, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme, ThemeColors } from "../../lib/ThemeContext";
+import { WebConstrainedScrollView } from "../../components/WebContainer";
 
 const { width } = Dimensions.get("window");
+const isWeb = Platform.OS === "web";
 
 // Animated Floating Icon Component
 const FloatingIcon = ({ 
@@ -144,7 +146,7 @@ const PathwayPreviewCard = ({
       marginBottom: 16,
       borderWidth: 1,
       borderColor: theme.cardBorder,
-      width: width * 0.75,
+      width: isWeb ? 320 : width * 0.75,
       marginRight: 16,
     }}
   >
@@ -312,9 +314,10 @@ export default function AboutScreen() {
         </Text>
       </View>
 
-      <ScrollView
+      <WebConstrainedScrollView
         contentContainerStyle={{ paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
+        maxWidth={600}
       >
 
         {/* About Section */}
@@ -565,7 +568,7 @@ export default function AboutScreen() {
             Tugas PAWM - Institut Teknologi Bandung
           </Text>
         </View>
-      </ScrollView>
+      </WebConstrainedScrollView>
     </LinearGradient>
   );
 }
