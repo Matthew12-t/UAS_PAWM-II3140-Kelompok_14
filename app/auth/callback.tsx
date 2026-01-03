@@ -21,23 +21,17 @@ export default function AuthCallbackScreen() {
     try {
       let url: string | null = null;
 
-      // Get URL differently for web vs mobile
+      // Get URL differently for web and mobile
       if (isWeb && typeof window !== 'undefined') {
-        // On web, get the full URL including hash
         url = window.location.href;
       } else {
-        // On mobile, use Linking
         url = await Linking.getInitialURL();
       }
       
       if (url) {
-        // Parse the URL to extract tokens
         const parsedUrl = Linking.parse(url);
         
-        // Check for access_token in the URL fragment (hash)
-        // Supabase sends tokens in the URL fragment after email verification
         if (url.includes("access_token") || url.includes("refresh_token")) {
-          // Extract tokens from URL
           const hashParams = url.split("#")[1];
           if (hashParams) {
             const urlParams = new URLSearchParams(hashParams);
@@ -46,7 +40,6 @@ export default function AuthCallbackScreen() {
             const type = urlParams.get("type");
 
             if (accessToken && refreshToken) {
-              // Set the session with the tokens
               const { data, error } = await supabase.auth.setSession({
                 access_token: accessToken,
                 refresh_token: refreshToken,
@@ -60,14 +53,12 @@ export default function AuthCallbackScreen() {
                 setStatus("success");
                 setMessage("Email berhasil diverifikasi! Mengalihkan...");
                 
-                // Redirect to main app after short delay
                 setTimeout(() => {
                   router.replace("/(tabs)");
                 }, 1500);
                 return;
               }
 
-              // For other auth types (recovery, etc.)
               setStatus("success");
               setMessage("Autentikasi berhasil! Mengalihkan...");
               setTimeout(() => {
@@ -78,7 +69,6 @@ export default function AuthCallbackScreen() {
           }
         }
 
-        // Check for error in URL
         if (url.includes("error")) {
           const hashParams = url.split("#")[1] || url.split("?")[1];
           if (hashParams) {
@@ -89,7 +79,6 @@ export default function AuthCallbackScreen() {
         }
       }
 
-      // If we reach here, check if there's already a valid session
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session) {
@@ -99,7 +88,6 @@ export default function AuthCallbackScreen() {
           router.replace("/(tabs)");
         }, 1500);
       } else {
-        // No session, redirect to login
         setStatus("success");
         setMessage("Silakan login untuk melanjutkan");
         setTimeout(() => {
@@ -111,7 +99,6 @@ export default function AuthCallbackScreen() {
       setStatus("error");
       setMessage(error.message || "Terjadi kesalahan saat verifikasi");
       
-      // Redirect to login after showing error
       setTimeout(() => {
         router.replace("/login");
       }, 3000);

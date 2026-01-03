@@ -24,7 +24,7 @@ const MUSIC_ENABLED_KEY = "@chemlab_music_enabled";
 
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Start muted by default
+  const [isMuted, setIsMuted] = useState(true); 
   const [isLoaded, setIsLoaded] = useState(false);
   const soundRef = useRef<Audio.Sound | null>(null);
 
@@ -42,7 +42,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
   const setupAudio = async () => {
     try {
-      // Set audio mode for background playback
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
         staysActiveInBackground: true,
@@ -53,7 +52,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
       console.log("[Audio] Audio mode set, loading sound file...");
 
-      // Load the audio file
+      // Load audio file
       const { sound } = await Audio.Sound.createAsync(
         require("../assets/audio/lofi-study.mp3"),
         { 
@@ -68,7 +67,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       setIsLoaded(true);
       console.log("[Audio] Sound loaded successfully!");
 
-      // Check if music should be enabled from saved preference
       const savedPreference = await AsyncStorage.getItem(MUSIC_ENABLED_KEY);
       console.log("[Audio] Saved preference:", savedPreference);
       
@@ -101,7 +99,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (isMuted) {
-        // Turn on music
         console.log("[Audio] Turning ON music...");
         await soundRef.current.setVolumeAsync(0.3);
         const playResult = await soundRef.current.playAsync();
@@ -110,7 +107,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         await AsyncStorage.setItem(MUSIC_ENABLED_KEY, "true");
         console.log("[Audio] Music turned ON");
       } else {
-        // Turn off music
         console.log("[Audio] Turning OFF music...");
         await soundRef.current.pauseAsync();
         setIsMuted(true);

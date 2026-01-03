@@ -7,10 +7,8 @@ import { supabase, signInWithGoogle } from "../lib/supabase";
 import * as WebBrowser from 'expo-web-browser';
 import { WebConstrainedScrollView } from "../components/WebContainer";
 
-// Warm up browser untuk Google OAuth
 WebBrowser.maybeCompleteAuthSession();
 
-// Animated Floating Icon Component
 const FloatingIcon = ({ 
   emoji, 
   size, 
@@ -126,7 +124,6 @@ export default function LoginScreen() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
-      {/* Animated Background Icons */}
       <View style={{ position: "absolute", width: "100%", height: "100%" }} pointerEvents="none">
         <FloatingIcon emoji="⚛️" size={56} top={30} left={15} delay={0} />
         <FloatingIcon emoji="🧪" size={44} top={100} right={15} delay={1000} />
@@ -135,13 +132,11 @@ export default function LoginScreen() {
         <FloatingIcon emoji="🧬" size={60} top={280} left={-10} delay={500} />
       </View>
 
-      {/* Content */}
       <WebConstrainedScrollView 
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 20 }}
         showsVerticalScrollIndicator={false}
         maxWidth={420}
       >
-        {/* Header */}
         <View style={{ alignItems: "center", marginBottom: 28 }}>
           <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
             <Image 
@@ -154,7 +149,6 @@ export default function LoginScreen() {
           <Text style={{ color: "#a5b4fc", fontSize: 16 }}>Virtual Chemistry Laboratory</Text>
         </View>
 
-        {/* Login Card */}
         <View style={{ 
           backgroundColor: "rgba(255, 255, 255, 0.97)", 
           borderRadius: 16, 
@@ -165,7 +159,7 @@ export default function LoginScreen() {
           shadowRadius: 12,
           elevation: 8,
         }}>
-          {/* Email Input */}
+
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 14, fontWeight: "600", color: "#374151", marginBottom: 8 }}>
               Email
@@ -181,7 +175,6 @@ export default function LoginScreen() {
             />
           </View>
 
-          {/* Password Input */}
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 14, fontWeight: "600", color: "#374151", marginBottom: 8 }}>
               Password
@@ -196,7 +189,6 @@ export default function LoginScreen() {
             />
           </View>
 
-          {/* Error Message */}
           {error && (
             <View style={{ 
               padding: 12, 
@@ -210,7 +202,6 @@ export default function LoginScreen() {
             </View>
           )}
 
-          {/* Login Button */}
           <TouchableOpacity
             onPress={handleLogin}
             disabled={loading}
@@ -228,7 +219,6 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
 
-          {/* Divider */}
           <View style={{ marginVertical: 24, position: "relative", height: 20, justifyContent: "center" }}>
             <View style={{ 
               position: "absolute", 
@@ -249,7 +239,6 @@ export default function LoginScreen() {
             </View>
           </View>
 
-          {/* Google Button */}
           <TouchableOpacity
             onPress={handleGoogleLogin}
             disabled={loading}
@@ -269,7 +258,6 @@ export default function LoginScreen() {
             <Text style={{ color: "#374151", fontSize: 15, fontWeight: "500" }}>Sign in with Google</Text>
           </TouchableOpacity>
 
-          {/* Footer Link */}
           <View style={{ marginTop: 24, flexDirection: "row", justifyContent: "center" }}>
             <Text style={{ color: "#6b7280", fontSize: 14 }}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => router.push("/signup")}>

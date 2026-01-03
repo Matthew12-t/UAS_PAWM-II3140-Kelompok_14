@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Theme colors type
 export type ThemeColors = {
   gradient: readonly [string, string, string];
   headerBg: string;
@@ -69,7 +68,6 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [isDarkMode, setIsDarkMode] = useState(true);
 
-  // Load theme preference on mount
   useEffect(() => {
     const loadTheme = async () => {
       try {

@@ -102,7 +102,6 @@ export default function FinalTestView({
     setScore(calculatedScore);
     setShowResults(true);
 
-    // Save to database
     try {
       for (let index = 0; index < questions.length; index++) {
         const q = questions[index];
@@ -113,14 +112,6 @@ export default function FinalTestView({
           ? `✓ Jawaban Anda benar!\n\n${q.explanation || "Selamat, jawaban Anda tepat!"}`
           : `✗ Jawaban Anda salah.\n\nJawaban yang benar adalah: ${q.options[q.correct_answer]}\n\n${q.explanation || "Silakan pelajari kembali materi ini."}`;
 
-        await supabase
-          .from("quiz_answers")
-          .delete()
-          .eq("pathway_id", pathway.id)
-          .eq("user_id", userId)
-          .eq("question_id", q.id);
-
-        // Insert new answer
         await supabase.from("quiz_answers").insert({
           user_id: userId,
           pathway_id: pathway.id,
@@ -132,7 +123,6 @@ export default function FinalTestView({
         });
       }
 
-      // Update user_pathway_progress with score 
       await supabase
         .from("user_pathway_progress")
         .update({ score: calculatedScore, status: "completed" })
@@ -191,7 +181,6 @@ export default function FinalTestView({
     );
   }
 
-  // Pre-test screen
   if (!testStarted) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: isWeb ? "center" : undefined, padding: 20 }}>
@@ -235,7 +224,7 @@ export default function FinalTestView({
             </View>
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
               <Text style={{ color: "#9ca3af", fontSize: 14 }}>Waktu</Text>
-              <Text style={{ color: "white", fontWeight: "600", fontSize: 14 }}>10 menit</Text>
+              <Text style={{ color: "white", fontWeight: "600", fontSize: 14 }}>25 menit</Text>
             </View>
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
               <Text style={{ color: "#9ca3af", fontSize: 14 }}>Passing Grade</Text>
@@ -285,7 +274,6 @@ export default function FinalTestView({
     );
   }
 
-  // Results screen
   if (showResults) {
     const passed = score >= 70;
     const correctCount = questions.filter((q: Question, index: number) => answers[index] === q.correct_answer).length;
@@ -296,7 +284,6 @@ export default function FinalTestView({
     
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 24 }}>
-        {/* Score Card */}
         <View style={{
           backgroundColor: "rgba(255,255,255,0.1)",
           borderRadius: 20,
@@ -371,7 +358,6 @@ export default function FinalTestView({
             </View>
           </View>
 
-          {/* Info text */}
           <Text style={{ 
             color: "#9ca3af", 
             fontSize: 13, 
@@ -382,7 +368,6 @@ export default function FinalTestView({
             💡 Lihat pembahasan lengkap di halaman{"\n"}"Hasil Pembelajaran"
           </Text>
 
-          {/* Action Button */}
           <TouchableOpacity
             onPress={handleGoToDashboard}
             style={{ width: "100%" }}
@@ -412,7 +397,6 @@ export default function FinalTestView({
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Timer Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         padding: 16,
@@ -435,7 +419,6 @@ export default function FinalTestView({
         </View>
       </View>
 
-      {/* Question Navigation Dots - Full Width */}
       <ScrollView 
         horizontal 
         showsHorizontalScrollIndicator={false}
@@ -473,7 +456,6 @@ export default function FinalTestView({
         ))}
       </ScrollView>
 
-      {/* Question - with maxWidth */}
       <ScrollView 
         style={{ flex: 1 }} 
         contentContainerStyle={{ 
@@ -497,7 +479,6 @@ export default function FinalTestView({
             </Text>
           </View>
 
-        {/* Options */}
         {currentQuestion.options.map((option, index) => (
           <TouchableOpacity
             key={index}
@@ -548,7 +529,6 @@ export default function FinalTestView({
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
       <View style={{
         padding: 16,
         flexDirection: "row",

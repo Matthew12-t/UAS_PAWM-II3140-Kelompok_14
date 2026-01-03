@@ -21,7 +21,8 @@ import { useTheme, ThemeColors } from "../../lib/ThemeContext";
 import { useAudio } from "../../lib/AudioContext";
 import { WebConstrainedScrollView } from "../../components/WebContainer";
 
-// Animated Floating Icon Component
+const isWeb = Platform.OS === "web";
+
 const FloatingIcon = ({ 
   emoji, 
   size, 
@@ -80,7 +81,6 @@ const FloatingIcon = ({
   );
 };
 
-// Settings Item Component
 const SettingsItem = ({ 
   icon, 
   title, 
@@ -144,7 +144,6 @@ const SettingsItem = ({
   </TouchableOpacity>
 );
 
-// Settings Section Component
 const SettingsSection = ({ 
   title, 
   children,
@@ -174,6 +173,7 @@ export default function SettingsScreen() {
   const { isDarkMode, theme, setDarkMode } = useTheme();
   const { isMuted, setMusicEnabled } = useAudio();
   const [user, setUser] = useState<any>(null);
+  const [isEmailUser, setIsEmailUser] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [editName, setEditName] = useState("");
@@ -192,6 +192,9 @@ export default function SettingsScreen() {
       }
       setUser(currentUser);
       setEditName(currentUser?.user_metadata?.full_name || "");
+      
+      const provider = currentUser?.app_metadata?.provider || currentUser?.identities?.[0]?.provider;
+      setIsEmailUser(provider === 'email');
     };
     fetchUser();
   }, []);
@@ -203,33 +206,64 @@ export default function SettingsScreen() {
 
   const handleSaveProfile = async () => {
     if (!editName.trim()) {
-      Alert.alert("Error", "Nama tidak boleh kosong");
+      if (Platform.OS === 'web') {
+        window.alert("Nama tidak boleh kosong");
+      } else {
+        Alert.alert("Error", "Nama tidak boleh kosong");
+      }
       return;
     }
 
     setSaving(true);
     try {
-      const { error } = await supabase.auth.updateUser({
+      const { data, error } = await supabase.auth.updateUser({
         data: { full_name: editName.trim() }
       });
 
       if (error) {
-        Alert.alert("Error", error.message);
+        if (Platform.OS === 'web') {
+          window.alert(error.message);
+        } else {
+          Alert.alert("Error", error.message);
+        }
       } else {
-        // Refresh user data
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
+        if (data?.user) {
+          setUser(data.user);
+        } else {
+          const currentUser = await getCurrentUser();
+          setUser(currentUser);
+        }
         setEditModalVisible(false);
-        Alert.alert("Sukses", "Profil berhasil diperbarui");
+        if (Platform.OS === 'web') {
+          window.alert("Profil berhasil diperbarui");
+        } else {
+          Alert.alert("Sukses", "Profil berhasil diperbarui");
+        }
       }
     } catch (err: any) {
-      Alert.alert("Error", err.message || "Gagal memperbarui profil");
+      if (Platform.OS === 'web') {
+        window.alert(err.message || "Gagal memperbarui profil");
+      } else {
+        Alert.alert("Error", err.message || "Gagal memperbarui profil");
+      }
     } finally {
       setSaving(false);
     }
   };
 
   const handleChangePassword = () => {
+    if (!isEmailUser) {
+      if (Platform.OS === 'web') {
+        window.alert("Anda login menggunakan Google. Untuk mengubah password, silakan kelola akun Google Anda langsung.");
+      } else {
+        Alert.alert(
+          "Tidak Tersedia",
+          "Anda login menggunakan Google. Untuk mengubah password, silakan kelola akun Google Anda langsung."
+        );
+      }
+      return;
+    }
+    
     setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
@@ -238,17 +272,29 @@ export default function SettingsScreen() {
 
   const handleSavePassword = async () => {
     if (!newPassword.trim()) {
-      Alert.alert("Error", "Password baru tidak boleh kosong");
+      if (Platform.OS === 'web') {
+        window.alert("Password baru tidak boleh kosong");
+      } else {
+        Alert.alert("Error", "Password baru tidak boleh kosong");
+      }
       return;
     }
 
     if (newPassword.length < 6) {
-      Alert.alert("Error", "Password minimal 6 karakter");
+      if (Platform.OS === 'web') {
+        window.alert("Password minimal 6 karakter");
+      } else {
+        Alert.alert("Error", "Password minimal 6 karakter");
+      }
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert("Error", "Konfirmasi password tidak cocok");
+      if (Platform.OS === 'web') {
+        window.alert("Konfirmasi password tidak cocok");
+      } else {
+        Alert.alert("Error", "Konfirmasi password tidak cocok");
+      }
       return;
     }
 
@@ -259,13 +305,27 @@ export default function SettingsScreen() {
       });
 
       if (error) {
-        Alert.alert("Error", error.message);
+        if (Platform.OS === 'web') {
+          window.alert(error.message);
+        } else {
+          Alert.alert("Error", error.message);
+        }
       } else {
         setPasswordModalVisible(false);
-        Alert.alert("Sukses", "Password berhasil diperbarui");
+        setNewPassword("");
+        setConfirmPassword("");
+        if (Platform.OS === 'web') {
+          window.alert("Password berhasil diperbarui. Silakan login kembali dengan password baru.");
+        } else {
+          Alert.alert("Sukses", "Password berhasil diperbarui. Silakan login kembali dengan password baru.");
+        }
       }
     } catch (err: any) {
-      Alert.alert("Error", err.message || "Gagal memperbarui password");
+      if (Platform.OS === 'web') {
+        window.alert(err.message || "Gagal memperbarui password");
+      } else {
+        Alert.alert("Error", err.message || "Gagal memperbarui password");
+      }
     } finally {
       setSaving(false);
     }
@@ -297,76 +357,98 @@ export default function SettingsScreen() {
     }
   };
 
-  const handleResetProgress = () => {
-    Alert.alert(
-      "Reset Progress",
-      "Apakah Anda yakin ingin mereset semua progress pembelajaran? Tindakan ini tidak dapat dibatalkan.",
-      [
-        { text: "Batal", style: "cancel" },
-        { 
-          text: "Reset", 
-          style: "destructive",
-          onPress: async () => {
-            try {
-              const currentUser = await getCurrentUser();
-              if (!currentUser) {
-                Alert.alert("Error", "User tidak ditemukan");
-                return;
+  const handleResetProgress = async () => {
+    const confirmReset = isWeb
+      ? window.confirm("Apakah Anda yakin ingin mereset semua progress pembelajaran? Tindakan ini tidak dapat dibatalkan.")
+      : await new Promise<boolean>((resolve) => {
+          Alert.alert(
+            "Reset Progress",
+            "Apakah Anda yakin ingin mereset semua progress pembelajaran? Tindakan ini tidak dapat dibatalkan.",
+            [
+              { text: "Batal", style: "cancel", onPress: () => resolve(false) },
+              { text: "Reset", style: "destructive", onPress: () => resolve(true) },
+            ]
+          );
+        });
+
+    if (!confirmReset) return;
+
+    try {
+      const currentUser = await getCurrentUser();
+      if (!currentUser) {
+        if (isWeb) {
+          window.alert("User tidak ditemukan");
+        } else {
+          Alert.alert("Error", "User tidak ditemukan");
+        }
+        return;
+      }
+
+      console.log("Resetting progress for user:", currentUser.id);
+
+      // Delete quiz answers 
+      const { data: quizData, error: quizError } = await supabase
+        .from("quiz_answers")
+        .delete()
+        .eq("user_id", currentUser.id)
+        .select();
+
+      console.log("Quiz answers deleted:", quizData?.length || 0, "Error:", quizError);
+
+      if (quizError) {
+        console.error("Error deleting quiz answers:", quizError);
+        if (isWeb) {
+          window.alert("Gagal menghapus jawaban kuis: " + quizError.message);
+        } else {
+          Alert.alert("Error", "Gagal menghapus jawaban kuis: " + quizError.message);
+        }
+        return;
+      }
+
+      // Delete user pathway progress
+      const { data: progressData, error: progressError } = await supabase
+        .from("user_pathway_progress")
+        .delete()
+        .eq("user_id", currentUser.id)
+        .select();
+
+      console.log("Progress deleted:", progressData?.length || 0, "Error:", progressError);
+
+      if (progressError) {
+        console.error("Error deleting progress:", progressError);
+        if (isWeb) {
+          window.alert("Gagal mereset progress: " + progressError.message);
+        } else {
+          Alert.alert("Error", "Gagal mereset progress: " + progressError.message);
+        }
+        return;
+      }
+
+      if (isWeb) {
+        window.alert("Semua progress pembelajaran telah direset.");
+        router.replace("/(tabs)");
+      } else {
+        Alert.alert(
+          "Sukses", 
+          "Semua progress pembelajaran telah direset.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                router.replace("/(tabs)");
               }
-
-              console.log("Resetting progress for user:", currentUser.id);
-
-              // Delete quiz answers (includes final test answers now)
-              const { data: quizData, error: quizError, count: quizCount } = await supabase
-                .from("quiz_answers")
-                .delete()
-                .eq("user_id", currentUser.id)
-                .select();
-
-              console.log("Quiz answers deleted:", quizData?.length || 0, "Error:", quizError);
-
-              if (quizError) {
-                console.error("Error deleting quiz answers:", quizError);
-                Alert.alert("Error", "Gagal menghapus jawaban kuis: " + quizError.message);
-                return;
-              }
-
-              // Delete user pathway progress
-              const { data: progressData, error: progressError } = await supabase
-                .from("user_pathway_progress")
-                .delete()
-                .eq("user_id", currentUser.id)
-                .select();
-
-              console.log("Progress deleted:", progressData?.length || 0, "Error:", progressError);
-
-              if (progressError) {
-                console.error("Error deleting progress:", progressError);
-                Alert.alert("Error", "Gagal mereset progress: " + progressError.message);
-                return;
-              }
-
-              Alert.alert(
-                "Sukses", 
-                "Semua progress pembelajaran telah direset.",
-                [
-                  {
-                    text: "OK",
-                    onPress: () => {
-                      // Optionally refresh the screen or navigate
-                      router.replace("/(tabs)");
-                    }
-                  }
-                ]
-              );
-            } catch (err: any) {
-              console.error("Reset progress error:", err);
-              Alert.alert("Error", err.message || "Gagal mereset progress");
             }
-          }
-        },
-      ]
-    );
+          ]
+        );
+      }
+    } catch (err: any) {
+      console.error("Reset progress error:", err);
+      if (isWeb) {
+        window.alert(err.message || "Gagal mereset progress");
+      } else {
+        Alert.alert("Error", err.message || "Gagal mereset progress");
+      }
+    }
   };
 
 
@@ -388,7 +470,6 @@ export default function SettingsScreen() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
-      {/* Background Icons */}
       <View style={{ position: "absolute", width: "100%", height: "100%" }} pointerEvents="none">
         <FloatingIcon emoji="⚙️" size={48} top={80} left={-10} delay={0} />
         <FloatingIcon emoji="🔧" size={36} top={200} right={10} delay={1000} />
@@ -396,7 +477,6 @@ export default function SettingsScreen() {
         <FloatingIcon emoji="👤" size={36} bottom={100} right={-5} delay={1500} />
       </View>
 
-      {/* Header - Fixed */}
       <View style={{
         backgroundColor: theme.cardBg,
         paddingTop: 50,
@@ -423,7 +503,6 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}
         maxWidth={500}
       >
-        {/* Profile Card */}
         <View style={{
           backgroundColor: theme.cardBg,
           borderRadius: 16,
@@ -455,7 +534,6 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {/* Account Settings */}
         <SettingsSection title="Akun" theme={theme}>
           <SettingsItem
             icon="👤"
@@ -467,7 +545,7 @@ export default function SettingsScreen() {
           <SettingsItem
             icon="🔒"
             title="Ubah Password"
-            subtitle="Perbarui kata sandi Anda"
+            subtitle={isEmailUser ? "Perbarui kata sandi Anda" : "Hanya untuk login email"}
             onPress={handleChangePassword}
             theme={theme}
           />
@@ -479,7 +557,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        {/* Preferences */}
         <SettingsSection title="Preferensi" theme={theme}>
           <SettingsItem
             icon="🎵"
@@ -518,7 +595,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        {/* Data & Privacy */}
         <SettingsSection title="Data & Privasi" theme={theme}>
           <SettingsItem
             icon="📊"
@@ -529,7 +605,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        {/* App Info */}
         <SettingsSection title="Informasi Aplikasi" theme={theme}>
           <SettingsItem
             icon="📱"
@@ -539,7 +614,6 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        {/* Danger Zone */}
         <SettingsSection title="Zona Berbahaya" theme={theme}>
           <SettingsItem
             icon="🚪"
@@ -551,11 +625,9 @@ export default function SettingsScreen() {
           />
         </SettingsSection>
 
-        {/* Bottom Spacing */}
         <View style={{ height: 40 }} />
       </WebConstrainedScrollView>
 
-      {/* Edit Profile Modal */}
       <Modal
         visible={editModalVisible}
         transparent
@@ -650,7 +722,6 @@ export default function SettingsScreen() {
         </View>
       </Modal>
 
-      {/* Change Password Modal */}
       <Modal
         visible={passwordModalVisible}
         transparent

@@ -20,7 +20,6 @@ interface QuizViewProps {
   isFinalTest?: boolean;
 }
 
-// Quiz explanations for different pathways
 const quizExplanations: { [key: string]: { [key: number]: string } } = {
   "Kuis 1: Ikatan Kimia": {
     0: "Ikatan ionik terbentuk melalui transfer elektron dari atom logam ke atom nonlogam. Atom yang kehilangan elektron menjadi kation (bermuatan positif) dan atom yang menerima elektron menjadi anion (bermuatan negatif).",
@@ -68,7 +67,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
     try {
       let correctCount = 0;
 
-      // Save answers and calculate score
       for (let index = 0; index < questions.length; index++) {
         const q = questions[index];
         const isCorrect = answers[index] === q.correct_answer;
@@ -96,7 +94,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
       setScore(finalScore);
       setShowResults(true);
 
-      // Update progress with score
       await supabase
         .from("user_pathway_progress")
         .update({ score: finalScore, status: "completed" })
@@ -118,7 +115,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
     }
   };
 
-  // Results View
   if (showResults) {
     const correctCount = answers.filter((a, i) => a === questions[i]?.correct_answer).length;
     const passed = score >= 70;
@@ -128,7 +124,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
         colors={["#0f172a", "#312e81", "#1e1b4b"]}
         style={{ flex: 1 }}
       >
-        {/* Header - Full Width */}
         <View style={{
           backgroundColor: "rgba(255,255,255,0.1)",
           paddingTop: 50,
@@ -142,7 +137,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
           </Text>
         </View>
 
-        {/* Content with maxWidth */}
         <ScrollView 
           style={{ flex: 1 }}
           contentContainerStyle={{ 
@@ -151,7 +145,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
           }}
         >
           <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
-          {/* Score Card */}
           <LinearGradient
             colors={passed ? ["#059669", "#10b981", "#34d399"] : ["#dc2626", "#ef4444", "#f87171"]}
             start={{ x: 0, y: 0 }}
@@ -174,7 +167,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
             </Text>
           </LinearGradient>
 
-          {/* Answer Review */}
           <Text style={{ color: "white", fontSize: 18, fontWeight: "600", marginBottom: 16 }}>
             Ringkasan Jawaban
           </Text>
@@ -210,7 +202,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
             );
           })}
 
-          {/* Action Buttons */}
           <View style={{ flexDirection: "row", gap: 12, marginTop: 10, marginBottom: 40 }}>
             <TouchableOpacity
               onPress={onBack}
@@ -249,7 +240,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
     );
   }
 
-  // Quiz View
   const question = questions[currentQuestion];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
@@ -258,7 +248,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
       colors={["#0f172a", "#312e81", "#1e1b4b"]}
       style={{ flex: 1 }}
     >
-      {/* Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         paddingTop: 50,
@@ -274,7 +263,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
           {pathway.title}
         </Text>
         
-        {/* Progress Bar */}
         <View style={{ marginTop: 12 }}>
           <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 8 }}>
             <Text style={{ color: "#a5b4fc", fontSize: 13 }}>
@@ -295,7 +283,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
         </View>
       </View>
 
-      {/* Content with maxWidth */}
       <ScrollView 
         style={{ flex: 1 }}
         contentContainerStyle={{ 
@@ -305,7 +292,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
         showsVerticalScrollIndicator={false}
       >
         <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
-        {/* Question */}
         <View style={{
           backgroundColor: "rgba(255,255,255,0.1)",
           borderRadius: 16,
@@ -317,7 +303,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
           </Text>
         </View>
 
-        {/* Options */}
         {question?.options.map((option: string, index: number) => {
           const isSelected = answers[currentQuestion] === index;
           return (
@@ -358,7 +343,6 @@ export default function QuizView({ pathway, user, onComplete, onBack, isFinalTes
           );
         })}
 
-        {/* Navigation Buttons */}
         <View style={{ flexDirection: "row", gap: 12, marginTop: 20, marginBottom: 40 }}>
           <TouchableOpacity
             onPress={handlePrevious}

@@ -8,16 +8,14 @@ import { WebConstrainedScrollView } from "../../components/WebContainer";
 const { width } = Dimensions.get("window");
 const isWeb = Platform.OS === "web";
 
-// Import images directly for better web compatibility
 const matthewPhoto = require("../../assets/images/matthew.png");
 const darrylPhoto = require("../../assets/images/darryl.png");
 const chemlabLogo = require("../../assets/images/chemlab.png");
 const aboutIcon = require("../../assets/images/about.png");
 
-// Helper function to get image URI for web
+// Helper function 
 const getImageSource = (source: ImageSourcePropType): string => {
   if (typeof source === 'number') {
-    // This is a require() result
     const resolved = Image.resolveAssetSource(source);
     return resolved?.uri || '';
   }
@@ -27,7 +25,6 @@ const getImageSource = (source: ImageSourcePropType): string => {
   return '';
 };
 
-// Animated Floating Icon Component
 const FloatingIcon = ({ 
   emoji, 
   size, 
@@ -86,7 +83,6 @@ const FloatingIcon = ({
   );
 };
 
-// Feature Card Component
 const FeatureCard = ({
   icon,
   title,
@@ -139,7 +135,6 @@ const FeatureCard = ({
   </View>
 );
 
-// Pathway Preview Card Component
 const PathwayPreviewCard = ({
   icon,
   title,
@@ -227,13 +222,11 @@ const PathwayPreviewCard = ({
   </View>
 );
 
-// Photo placeholders mapping
 const teamPhotos: { [key: string]: ImageSourcePropType } = {
   matthew: matthewPhoto,
   darryl: darrylPhoto,
 };
 
-// Team Member Card
 const TeamMemberCard = ({
   name,
   nim,

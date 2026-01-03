@@ -17,7 +17,6 @@ import { supabase, getCurrentUser } from "../../lib/supabase";
 import { useTheme, ThemeColors } from "../../lib/ThemeContext";
 import { WebConstrainedScrollView } from "../../components/WebContainer";
 
-// Stats Card Component
 const StatsCard = ({ 
   title, 
   value, 
@@ -62,7 +61,6 @@ const StatsCard = ({
   </LinearGradient>
 );
 
-// Result Item Component
 const ResultItem = ({ 
   number, 
   title, 
@@ -148,7 +146,6 @@ const ResultItem = ({
   );
 };
 
-// Animated Floating Icon Component
 const FloatingIcon = ({ 
   emoji, 
   size, 
@@ -207,7 +204,6 @@ const FloatingIcon = ({
   );
 };
 
-// Attempt Selector Component
 const AttemptSelector = ({
   attempts,
   selectedAttempt,
@@ -220,13 +216,17 @@ const AttemptSelector = ({
 
   return (
     <View style={{ marginBottom: 16 }}>
-      <Text style={{ color: "#9ca3af", fontSize: 12, marginBottom: 8 }}>
-        Pilih Percobaan ({attempts} total)
-      </Text>
       {attempts <= 1 ? (
-        <Text style={{ color: "#a5b4fc", fontSize: 13 }}>
-          Hanya ada 1 percobaan
-        </Text>
+        <View style={{
+          paddingHorizontal: 16,
+          paddingVertical: 10,
+          borderRadius: 12,
+          backgroundColor: "#6366f1",
+        }}>
+          <Text style={{ color: "white", fontSize: 13, fontWeight: "600" }}>
+            Percobaan 1 (Satu-satunya)
+          </Text>
+        </View>
       ) : (
         <ScrollView 
           horizontal 
@@ -251,7 +251,7 @@ const AttemptSelector = ({
                 fontSize: 13,
                 fontWeight: selectedAttempt === i ? "600" : "400",
               }}>
-                Percobaan {i + 1}
+                Percobaan {i + 1} 
               </Text>
             </TouchableOpacity>
           ))}
@@ -272,12 +272,10 @@ export default function ResultsScreen() {
   const [selectedTitle, setSelectedTitle] = useState<string>("");
   const [modalVisible, setModalVisible] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
-  // Changed: Store grouped attempts instead of single attempt
   const [groupedAttempts, setGroupedAttempts] = useState<any[][]>([]);
   const [selectedAttempt, setSelectedAttempt] = useState(0);
   const router = useRouter();
 
-  // Fetch current user
   useEffect(() => {
     const fetchUser = async () => {
       const currentUser = await getCurrentUser();
@@ -290,23 +288,20 @@ export default function ResultsScreen() {
     fetchUser();
   }, []);
 
-  // Fetch quiz detail when modal opens - Updated to group by attempts
   const fetchQuizDetail = async (pathwayId: number, title: string) => {
     setSelectedPathway(pathwayId);
     setSelectedTitle(title);
     setModalVisible(true);
     setModalLoading(true);
-    setSelectedAttempt(0); // Reset to first (latest) attempt
+    setSelectedAttempt(0); 
 
     try {
-      // Fetch pathway content for questions
       const { data: pathwayData } = await supabase
         .from("pathways")
         .select("content")
         .eq("id", pathwayId)
         .single();
 
-      // Fetch user's answers
       const { data: answersData } = await supabase
         .from("quiz_answers")
         .select("*")
@@ -317,27 +312,23 @@ export default function ResultsScreen() {
       if (answersData && answersData.length > 0) {
         const questions = pathwayData?.content?.questions || [];
         
-        // Determine questions per attempt
         let questionsPerAttempt = questions.length;
         
         if (questionsPerAttempt === 0) {
-          // Count unique question_ids by looking for repeating pattern
           const questionIds: string[] = [];
           for (const answer of answersData) {
-            // If we see a question_id that we've seen before, we found the boundary
             if (questionIds.includes(answer.question_id)) {
               break;
             }
             questionIds.push(answer.question_id);
           }
-          questionsPerAttempt = questionIds.length || 3; // Default to 3 if can't determine
+          questionsPerAttempt = questionIds.length || 3; 
         }
 
         console.log("Questions per attempt:", questionsPerAttempt);
         console.log("Total answers:", answersData.length);
         console.log("Expected attempts:", Math.ceil(answersData.length / questionsPerAttempt));
 
-        // Format all answers
         const formattedAnswers = answersData.map((answer: any, idx: number) => {
           const question = questions.find((q: any) => q.id === answer.question_id);
           
@@ -360,7 +351,6 @@ export default function ResultsScreen() {
           };
         });
 
-        // Group answers into attempts
         const attempts: any[][] = [];
         for (let i = 0; i < formattedAnswers.length; i += questionsPerAttempt) {
           const attempt = formattedAnswers.slice(i, i + questionsPerAttempt);
@@ -371,9 +361,8 @@ export default function ResultsScreen() {
 
         console.log("Number of attempts found:", attempts.length);
 
-        // Keep chronological order: attempt 1 is oldest, last attempt is newest
         setGroupedAttempts(attempts);
-        setSelectedAttempt(attempts.length - 1); // Select latest (last) attempt by default
+        setSelectedAttempt(attempts.length - 1); 
       } else {
         setGroupedAttempts([]);
       }
@@ -385,12 +374,10 @@ export default function ResultsScreen() {
     }
   };
 
-  // Fetch quiz results from user_pathway_progress
   const fetchResults = async () => {
     if (!user) return;
 
     try {
-      // Fetch user pathway progress
       const { data: progressData, error: progressError } = await supabase
         .from("user_pathway_progress")
         .select("*")
@@ -400,7 +387,6 @@ export default function ResultsScreen() {
         console.error("Error fetching progress:", progressError);
       }
 
-      // Fetch all pathways to get titles and types
       const { data: pathwaysData, error: pathwaysError } = await supabase
         .from("pathways")
         .select("*")
@@ -415,7 +401,6 @@ export default function ResultsScreen() {
       }
 
       if (progressData && pathwaysData) {
-        // Filter for completed quiz/final_test with scores
         const formattedResults = progressData
           .filter((p: any) => p.status === "completed" && p.score !== null)
           .map((p: any) => {
@@ -454,7 +439,6 @@ export default function ResultsScreen() {
     fetchResults();
   };
 
-  // Calculate statistics
   const totalScore = quizResults.reduce((sum, r) => sum + (r.score || 0), 0);
   const maxPossibleScore = quizResults.length * 100;
   const averageScore = quizResults.length > 0 
@@ -463,7 +447,6 @@ export default function ResultsScreen() {
   const completedCount = quizResults.length;
   const totalQuizAndFinalTest = pathways.filter((p: any) => p.type === "quiz" || p.type === "final_test").length;
 
-  // Get current attempt's answers and score
   const currentAttemptAnswers = groupedAttempts[selectedAttempt] || [];
   const currentAttemptScore = currentAttemptAnswers.length > 0
     ? Math.round((currentAttemptAnswers.filter((a: any) => a.is_correct).length / currentAttemptAnswers.length) * 100)

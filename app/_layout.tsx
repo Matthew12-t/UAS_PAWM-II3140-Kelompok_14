@@ -9,7 +9,6 @@ import { AudioProvider } from "../lib/AudioContext";
 import { ThemeProvider } from "../lib/ThemeContext";
 import "../global.css";
 
-// Prevent the native splash from auto-hiding until we decide
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
@@ -18,24 +17,19 @@ export default function RootLayout() {
   const router = useRouter();
 
   useEffect(() => {
-    // Simulate any initial data loading / font loading here
     const prepare = async () => {
-      // Add any async prep work here (fonts, async storage check, etc.)
       setAppIsReady(true);
     };
     prepare();
   }, []);
 
-  // Handle deep links for email verification
   useEffect(() => {
     const handleDeepLink = async (event: { url: string }) => {
       const url = event.url;
       console.log("Deep link received:", url);
 
-      // Check if it's an auth callback URL
       if (url.includes("access_token") || url.includes("auth/callback")) {
         try {
-          // Extract tokens from URL fragment
           const hashPart = url.split("#")[1];
           if (hashPart) {
             const params = new URLSearchParams(hashPart);
@@ -60,10 +54,8 @@ export default function RootLayout() {
       }
     };
 
-    // Listen for incoming links
     const subscription = Linking.addEventListener("url", handleDeepLink);
 
-    // Check for initial URL (when app is opened via deep link)
     Linking.getInitialURL().then((url) => {
       if (url) {
         handleDeepLink({ url });
@@ -81,7 +73,6 @@ export default function RootLayout() {
     }
   }, [appIsReady, showSplash]);
 
-  // Show custom splash screen while app is preparing or splash is visible
   if (!appIsReady || showSplash) {
     return <CustomSplashScreen onFinish={() => setShowSplash(false)} />;
   }

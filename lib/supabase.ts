@@ -5,23 +5,19 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 
-// Credentials sama dengan web (apps/web/.env)
+// Credentials 
 const supabaseUrl = 'https://zmwiyvaxmllhrxuhljlx.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inptd2l5dmF4bWxsaHJ4dWhsamx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MTI1ODIsImV4cCI6MjA3NjI4ODU4Mn0.x6kqZqGLLb-lUmnNF4pXyFfiuAxd1oSmzZTikuJRqWs';
 
-// Detect if running on web
 const isWeb = Platform.OS === 'web';
 
-// Get the redirect URL for OAuth - different for web vs mobile
 const getRedirectUrl = () => {
   if (isWeb) {
-    // For web, use the current origin
     if (typeof window !== 'undefined') {
       return `${window.location.origin}/auth/callback`;
     }
     return 'http://localhost:8081/auth/callback';
   }
-  // For mobile, use the custom scheme
   return AuthSession.makeRedirectUri({
     scheme: 'chemlab',
     path: 'auth/callback',
@@ -35,7 +31,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storage: AsyncStorage,
     autoRefreshToken: true,
     persistSession: true,
-    // Enable detectSessionInUrl for web to handle OAuth callback
     detectSessionInUrl: isWeb,
   },
 });
@@ -43,25 +38,20 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // Google OAuth Sign In
 export const signInWithGoogle = async () => {
   try {
-    // For web platform, use standard OAuth redirect
     if (isWeb) {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
-          // Don't skip browser redirect on web
           skipBrowserRedirect: false,
         },
       });
 
       if (error) throw error;
       
-      // On web, this will redirect the browser automatically
-      // The session will be handled when the user returns to the callback page
       return { data, error: null };
     }
 
-    // For mobile platforms, use WebBrowser
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -73,7 +63,6 @@ export const signInWithGoogle = async () => {
     if (error) throw error;
 
     if (data?.url) {
-      // Open browser for OAuth
       const result = await WebBrowser.openAuthSessionAsync(
         data.url,
         redirectUrl
@@ -81,13 +70,11 @@ export const signInWithGoogle = async () => {
 
       if (result.type === 'success') {
         const url = result.url;
-        // Extract tokens from URL
         const params = new URLSearchParams(url.split('#')[1]);
         const accessToken = params.get('access_token');
         const refreshToken = params.get('refresh_token');
 
         if (accessToken && refreshToken) {
-          // Set session with tokens
           const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
@@ -106,7 +93,7 @@ export const signInWithGoogle = async () => {
   }
 };
 
-// Helper function untuk mendapatkan current user
+// Helper function 
 export const getCurrentUser = async () => {
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error) {
@@ -116,7 +103,6 @@ export const getCurrentUser = async () => {
   return user;
 };
 
-// Helper function untuk mendapatkan session
 export const getSession = async () => {
   const { data: { session }, error } = await supabase.auth.getSession();
   if (error) {
@@ -126,7 +112,6 @@ export const getSession = async () => {
   return session;
 };
 
-// Helper function untuk sign out
 export const signOut = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) {

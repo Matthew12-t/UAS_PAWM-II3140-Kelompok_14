@@ -9,18 +9,12 @@ interface WebContentContainerProps {
 
 const isWeb = Platform.OS === 'web';
 
-/**
- * A container component that limits the content width on web platforms
- * while keeping full width on mobile devices.
- * Use this inside ScrollView to constrain only the content area (not header/footer).
- */
 export function WebContentContainer({ 
   children, 
   style,
-  maxWidth = 480 // Default max width similar to mobile screen
+  maxWidth = 480 
 }: WebContentContainerProps) {
   if (!isWeb) {
-    // On mobile, just return children with optional style
     return (
       <View style={[{ flex: 1 }, style]}>
         {children}
@@ -28,7 +22,6 @@ export function WebContentContainer({
     );
   }
 
-  // On web, center the content with max width
   return (
     <View style={[styles.webContentContainer, style]}>
       <View style={[styles.webContentInner, { maxWidth }]}>
@@ -38,10 +31,6 @@ export function WebContentContainer({
   );
 }
 
-/**
- * A ScrollView wrapper that constrains content width on web.
- * Header and footer remain full width, only scrollable content is constrained.
- */
 interface WebScrollViewProps {
   children: React.ReactNode;
   style?: ViewStyle;

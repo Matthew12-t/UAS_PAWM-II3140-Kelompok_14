@@ -16,7 +16,6 @@ import { supabase, getCurrentUser, signOut } from "../../lib/supabase";
 import { useTheme, ThemeColors } from "../../lib/ThemeContext";
 import { WebConstrainedScrollView } from "../../components/WebContainer";
 
-// Animated Floating Icon Component
 const FloatingIcon = ({ 
   emoji, 
   size, 
@@ -75,7 +74,6 @@ const FloatingIcon = ({
   );
 };
 
-// Pathway Card Component
 const PathwayCard = ({ 
   pathway, 
   index, 
@@ -121,7 +119,6 @@ const PathwayCard = ({
         flexDirection: "row",
         alignItems: "center",
       }}>
-        {/* Number Circle */}
         <View style={{
           width: 48,
           height: 48,
@@ -140,7 +137,6 @@ const PathwayCard = ({
           )}
         </View>
 
-        {/* Content */}
         <View style={{ flex: 1 }}>
           <Text style={{ 
             color: locked ? theme.textMuted : theme.textPrimary, 
@@ -158,7 +154,6 @@ const PathwayCard = ({
           </Text>
         </View>
 
-        {/* Status Badge */}
         <View style={{
           backgroundColor: getStatusColor(),
           paddingHorizontal: 12,
@@ -183,7 +178,6 @@ export default function DashboardScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
 
-  // Fetch current user
   useEffect(() => {
     const fetchUser = async () => {
       const currentUser = await getCurrentUser();
@@ -201,7 +195,6 @@ export default function DashboardScreen() {
     if (!user) return;
 
     try {
-      // Fetch pathways
       const { data: pathwaysData } = await supabase
         .from("pathways")
         .select("*")
@@ -211,7 +204,6 @@ export default function DashboardScreen() {
         setPathways(pathwaysData);
       }
 
-      // Fetch user progress
       const { data: progressData } = await supabase
         .from("user_pathway_progress")
         .select("*")
@@ -234,7 +226,6 @@ export default function DashboardScreen() {
     }
   }, [user]);
 
-  // Refresh data when screen comes into focus (after returning from pathway)
   useFocusEffect(
     useCallback(() => {
       if (user) {
@@ -284,7 +275,6 @@ export default function DashboardScreen() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
-      {/* Background Icons */}
       <View style={{ position: "absolute", width: "100%", height: "100%" }} pointerEvents="none">
         <FloatingIcon emoji="⚛️" size={48} top={80} left={-10} delay={0} />
         <FloatingIcon emoji="🧪" size={36} top={200} right={10} delay={1000} />
@@ -292,7 +282,6 @@ export default function DashboardScreen() {
         <FloatingIcon emoji="⚗️" size={36} bottom={100} right={-5} delay={1500} />
       </View>
 
-      {/* Header - Fixed */}
       <View style={{
         backgroundColor: theme.cardBg,
         paddingTop: 50,
@@ -322,7 +311,6 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
         maxWidth={1000}
       >
-        {/* Welcome Section */}
         <View style={{ marginBottom: 24 }}>
           <Text style={{ fontSize: 26, fontWeight: "bold", color: theme.textPrimary, marginBottom: 4 }}>
             Selamat datang, {user?.user_metadata?.full_name || "Siswa"}!
@@ -332,7 +320,6 @@ export default function DashboardScreen() {
           </Text>
         </View>
 
-        {/* Progress Card */}
         <LinearGradient
           colors={["#6366f1", "#3b82f6", "#06b6d4"]}
           start={{ x: 0, y: 0 }}
@@ -370,7 +357,6 @@ export default function DashboardScreen() {
           </View>
         </LinearGradient>
 
-        {/* Pathways Section */}
         <View style={{ marginBottom: 20 }}>
           <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
             <View style={{ 
@@ -416,7 +402,6 @@ export default function DashboardScreen() {
                 progress={getProgressForPathway(pathway.id)}
                 theme={theme}
                 onPress={() => {
-                  // Navigate to pathway detail
                   router.push(`/pathway/${pathway.id}`);
                 }}
               />

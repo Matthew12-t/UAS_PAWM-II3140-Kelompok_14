@@ -23,11 +23,10 @@ interface TopicViewProps {
   onBack: () => void;
 }
 
-// Video mapping by pathway ID
 const getVideoIdByPathwayId = (pathwayId: number): string => {
   const videoMapping: { [key: number]: string } = {
-    1: "7rodnBMRdCw", // Topik 1 - Ikatan Kimia
-    4: "5x_2ctPpArM", // Topik 2 - Video Topik 2
+    1: "7rodnBMRdCw", 
+    4: "5x_2ctPpArM", 
   };
   return videoMapping[pathwayId] || "dQw4w9WgXcQ";
 };
@@ -55,7 +54,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
       colors={["#0f172a", "#312e81", "#1e1b4b"]}
       style={{ flex: 1 }}
     >
-      {/* Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         paddingTop: 50,
@@ -72,7 +70,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
         </Text>
       </View>
 
-      {/* Content with maxWidth */}
       <ScrollView 
         style={{ flex: 1 }}
         contentContainerStyle={{ 
@@ -82,7 +79,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
         showsVerticalScrollIndicator={false}
       >
         <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
-        {/* Description Card */}
         <View style={{
           backgroundColor: "rgba(99, 102, 241, 0.2)",
           borderRadius: 16,
@@ -96,7 +92,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
           </Text>
         </View>
 
-        {/* Video Section */}
         <View style={{
           backgroundColor: "rgba(255,255,255,0.1)",
           borderRadius: 16,
@@ -114,7 +109,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
             </Text>
           </View>
           
-          {/* YouTube Video Thumbnail */}
           <TouchableOpacity 
             onPress={openVideo}
             style={{
@@ -128,7 +122,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
               style={{ width: "100%", height: 180 }}
               resizeMode="cover"
             />
-            {/* Play Button Overlay */}
             <View style={{
               position: "absolute",
               top: 0,
@@ -147,7 +140,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
                 justifyContent: "center",
                 alignItems: "center",
               }}>
-                {/* Triangle Play Icon */}
                 <View style={{
                   width: 0,
                   height: 0,
@@ -168,7 +160,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
           </Text>
         </View>
 
-        {/* Content Sections */}
         {sections.map((section: any, index: number) => (
           <View key={index} style={{
             backgroundColor: "rgba(255,255,255,0.1)",
@@ -187,7 +178,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
           </View>
         ))}
 
-        {/* Image for Pathway 1 */}
         {pathway.id === 1 && (
           <View style={{
             backgroundColor: "rgba(255,255,255,0.1)",
@@ -223,7 +213,6 @@ export default function TopicView({ pathway, user, onComplete, onBack }: TopicVi
           </View>
         )}
 
-        {/* Action Buttons */}
         <View style={{ flexDirection: "row", gap: 12, marginTop: 10, marginBottom: 40 }}>
           <TouchableOpacity
             onPress={onBack}

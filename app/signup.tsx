@@ -8,7 +8,6 @@ import * as WebBrowser from 'expo-web-browser';
 import { WebConstrainedScrollView } from "../components/WebContainer";
 import * as AuthSession from 'expo-auth-session';
 
-// Warm up browser untuk Google OAuth
 WebBrowser.maybeCompleteAuthSession();
 
 // Get redirect URL for email verification
@@ -17,7 +16,6 @@ const redirectUrl = AuthSession.makeRedirectUri({
   path: 'auth/callback',
 });
 
-// Animated Floating Icon Component
 const FloatingIcon = ({ 
   emoji, 
   size, 
@@ -104,7 +102,6 @@ export default function SignupScreen() {
   const handleSignup = async () => {
     setError(null);
 
-    // Validation
     if (!fullName.trim()) {
       setError("Please enter your full name");
       return;
@@ -176,7 +173,6 @@ export default function SignupScreen() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
-      {/* Animated Background Icons */}
       <View style={{ position: "absolute", width: "100%", height: "100%" }} pointerEvents="none">
         <FloatingIcon emoji="⚛️" size={56} top={30} left={15} delay={0} />
         <FloatingIcon emoji="🧪" size={44} top={100} right={15} delay={1000} />
@@ -185,13 +181,11 @@ export default function SignupScreen() {
         <FloatingIcon emoji="🧬" size={60} top={280} left={-10} delay={500} />
       </View>
 
-      {/* Content */}
       <WebConstrainedScrollView 
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 20 }}
         showsVerticalScrollIndicator={false}
         maxWidth={420}
       >
-        {/* Header */}
         <View style={{ alignItems: "center", marginBottom: 28 }}>
           <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
             <Image 
@@ -204,7 +198,6 @@ export default function SignupScreen() {
           <Text style={{ color: "#a5b4fc", fontSize: 16 }}>Create Your Account</Text>
         </View>
 
-        {/* Signup Card */}
         <View style={{ 
           backgroundColor: "rgba(255, 255, 255, 0.97)", 
           borderRadius: 16, 
@@ -215,7 +208,6 @@ export default function SignupScreen() {
           shadowRadius: 12,
           elevation: 8,
         }}>
-          {/* Full Name Input */}
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 14, fontWeight: "600", color: "#374151", marginBottom: 8 }}>
               Full Name
@@ -230,7 +222,6 @@ export default function SignupScreen() {
             />
           </View>
 
-          {/* Email Input */}
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 14, fontWeight: "600", color: "#374151", marginBottom: 8 }}>
               Email
@@ -249,7 +240,6 @@ export default function SignupScreen() {
             )}
           </View>
 
-          {/* Password Input */}
           <View style={{ marginBottom: 20 }}>
             <Text style={{ fontSize: 14, fontWeight: "600", color: "#374151", marginBottom: 8 }}>
               Password
@@ -267,7 +257,6 @@ export default function SignupScreen() {
             </Text>
           </View>
 
-          {/* Error Message */}
           {error && (
             <View style={{ 
               padding: 12, 
@@ -281,7 +270,6 @@ export default function SignupScreen() {
             </View>
           )}
 
-          {/* Signup Button */}
           <TouchableOpacity
             onPress={handleSignup}
             disabled={loading || !isFormValid}
@@ -299,7 +287,6 @@ export default function SignupScreen() {
             </Text>
           </TouchableOpacity>
 
-          {/* Divider */}
           <View style={{ marginVertical: 24, position: "relative", height: 20, justifyContent: "center" }}>
             <View style={{ 
               position: "absolute", 
@@ -320,7 +307,6 @@ export default function SignupScreen() {
             </View>
           </View>
 
-          {/* Google Button */}
           <TouchableOpacity
             onPress={handleGoogleSignup}
             disabled={loading}
@@ -340,7 +326,6 @@ export default function SignupScreen() {
             <Text style={{ color: "#374151", fontSize: 15, fontWeight: "500" }}>Sign up with Google</Text>
           </TouchableOpacity>
 
-          {/* Footer Link */}
           <View style={{ marginTop: 24, flexDirection: "row", justifyContent: "center" }}>
             <Text style={{ color: "#6b7280", fontSize: 14 }}>Already have an account? </Text>
             <TouchableOpacity onPress={() => router.push("/login")}>

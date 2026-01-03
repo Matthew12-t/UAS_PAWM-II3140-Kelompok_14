@@ -11,7 +11,6 @@ const tabIcons: { [key: string]: ImageSourcePropType } = {
   about: require("../../assets/images/about.png"),
 };
 
-// Custom Tab Bar Icon Component
 const TabIcon = ({ 
   iconName, 
   label, 

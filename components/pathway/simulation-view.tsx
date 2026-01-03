@@ -122,7 +122,6 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
       colors={["#0f172a", "#312e81", "#1e1b4b"]}
       style={{ flex: 1 }}
     >
-      {/* Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         paddingTop: 50,
@@ -139,7 +138,6 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
         </Text>
       </View>
 
-      {/* Content with maxWidth */}
       <ScrollView 
         style={{ flex: 1 }} 
         contentContainerStyle={{ 
@@ -148,9 +146,7 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
         }}
       >
         <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
-        {/* Main Layout - Row for Energy + Simulation */}
         <View style={styles.mainRow}>
-        {/* Potential Energy Bar */}
         <View style={styles.energyContainer}>
           <Text style={styles.energyTitle}>Potential{"\n"}Energy</Text>
           <View style={styles.energyBar}>
@@ -168,9 +164,7 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
           <Text style={styles.energyLabel}>Energy Level</Text>
         </View>
 
-        {/* Simulation Box */}
         <View style={styles.simulationBox}>
-          {/* Left Atom */}
           <Animated.View
             style={[
               styles.atom,
@@ -186,7 +180,6 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
             <Text style={styles.atomLabel}>{leftElement[0]}</Text>
           </Animated.View>
 
-          {/* Right Atom */}
           <Animated.View
             style={[
               styles.atom,
@@ -202,7 +195,6 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
             <Text style={styles.atomLabel}>{rightElement[0]}</Text>
           </Animated.View>
 
-          {/* Interaction Status */}
           <View style={styles.interactionContainer}>
             <Text style={styles.interactionLabel}>Overall interaction:</Text>
             <Text
@@ -224,9 +216,7 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
         </View>
       </View>
 
-      {/* Control Panel */}
       <View style={styles.controlPanel}>
-        {/* Left Element Selector */}
         <View style={[styles.selectorGroup, { zIndex: 200 }]}>
           <Text style={styles.selectorLabel}>Left Element</Text>
           <TouchableOpacity
@@ -267,7 +257,6 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
           )}
         </View>
 
-        {/* Right Element Selector */}
         <View style={[styles.selectorGroup, { zIndex: 100 }]}>
           <Text style={styles.selectorLabel}>Right Element</Text>
           <TouchableOpacity
@@ -308,7 +297,6 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
           )}
         </View>
 
-        {/* Distance Controls */}
         <View style={styles.distanceGroup}>
           <Text style={styles.selectorLabel}>Distance</Text>
           <View style={styles.distanceButtons}>
@@ -329,7 +317,6 @@ function SimulasiSenyawa({ pathway, onComplete, onBack }: { pathway: any; onComp
         </View>
       </View>
 
-      {/* Bottom Buttons */}
       <View style={styles.bottomButtons}>
         <TouchableOpacity style={styles.backButton} onPress={onBack}>
           <Text style={styles.backButtonText}>Kembali</Text>
@@ -361,8 +348,7 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
   const [isCompleting, setIsCompleting] = useState(false);
   const [interaction, setInteraction] = useState("Neutral");
   const [interactionColor, setInteractionColor] = useState("#9ca3af");
-
-  // Calculate canvas width 
+ 
   const maxContainerWidth = isWeb ? 600 : SCREEN_WIDTH;
   const canvasWidth = Math.min(SCREEN_WIDTH - 32, maxContainerWidth - 32);
   const canvasHeight = 350;
@@ -370,15 +356,12 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
   const bias = 100;
   const midY = canvasHeight / 2;
 
-  // Atom positions - default to neutral (farther apart)
   const [a1X, setA1X] = useState(canvasWidth * 0.20);
   const [a2X, setA2X] = useState(canvasWidth * 0.80);
 
-  // Refs for pan responders
   const a1Offset = useRef(0);
   const a2Offset = useRef(0);
 
-  // Force calculation (Lennard-Jones)
   const computeForce = (x1: number, x2: number) => {
     const r = Math.abs(x2 - x1);
     if (r < 1) return { mag: 0, kind: "Neutral" };
@@ -397,10 +380,10 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
     setInteraction(force.kind);
     setInteractionColor(
       force.kind === "Attractive"
-        ? "#90EE90" // lightgreen
+        ? "#90EE90" 
         : force.kind === "Repulsive"
-        ? "#FFA500" // orange
-        : "#808080" // gray
+        ? "#FFA500" 
+        : "#808080" 
     );
   }, [a1X, a2X]);
 
@@ -442,18 +425,14 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
     onComplete();
   };
 
-  // Arrow direction based on force
   const force = computeForce(a1X, a2X);
 
-  // Calculate distance and overlap factor for electron clouds
   const distance = Math.abs(a2X - a1X);
   const overlapFactor = Math.max(0, 1 - distance / 300);
   
-  // Base cloud radius (smaller when far apart)
   const baseCloudRadius = 80;
   const cloudRadius = baseCloudRadius + overlapFactor * 40;
   
-  // Arrow length based on force magnitude
   const arrowLength = Math.min(60, Math.max(20, Math.abs(force.mag) * 100 + 20));
 
   return (
@@ -461,7 +440,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
       colors={["#0f172a", "#312e81", "#1e1b4b"]}
       style={{ flex: 1 }}
     >
-      {/* Header - Full Width */}
       <View style={{
         backgroundColor: "rgba(255,255,255,0.1)",
         paddingTop: 50,
@@ -478,7 +456,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
         </Text>
       </View>
 
-      {/* Content with maxWidth */}
       <ScrollView 
         style={{ flex: 1 }} 
         contentContainerStyle={{ 
@@ -487,9 +464,7 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
         }}
       >
         <View style={{ width: "100%", maxWidth: isWeb ? 600 : undefined }}>
-        {/* Canvas Container */}
         <View style={styles.canvasContainer}>
-          {/* Header */}
           <View style={styles.canvasHeader}>
             <Text style={styles.canvasHeaderText}>Pembentukkan Ikatan Kimia</Text>
             <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
@@ -497,13 +472,10 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
             </TouchableOpacity>
           </View>
 
-          {/* Cyan border */}
           <View style={styles.canvasBorder} />
 
-          {/* Canvas */}
           <View style={[styles.canvas, { width: canvasWidth, height: canvasHeight }]}>
             
-            {/* Red glow effect for LEFT atom - individual cloud */}
             <View
               style={{
                 position: "absolute",
@@ -532,7 +504,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
               />
             </View>
 
-            {/* Red glow effect for RIGHT atom - individual cloud */}
             <View
               style={{
                 position: "absolute",
@@ -561,7 +532,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
               />
             </View>
 
-            {/* Merged cloud in the middle when overlapping (attractive zone) */}
             {overlapFactor > 0.2 && (
               <View
                 style={{
@@ -591,7 +561,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
               </View>
             )}
 
-            {/* Left Arrow - starts from atom, points LEFT when repulsive, RIGHT when attractive */}
             <View 
               style={{ 
                 position: "absolute", 
@@ -602,7 +571,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
                 backgroundColor: "#FFD700",
               }} 
             />
-            {/* Left Arrow Head */}
             <Text style={{ 
               position: "absolute", 
               left: force.kind === "Repulsive" ? a1X - arrowLength - atomR - 12 : a1X + atomR + arrowLength - 4,
@@ -614,7 +582,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
               {force.kind === "Repulsive" ? "◀" : "▶"}
             </Text>
 
-            {/* Right Arrow - starts from atom, points RIGHT when repulsive, LEFT when attractive */}
             <View 
               style={{ 
                 position: "absolute", 
@@ -625,7 +592,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
                 backgroundColor: "#FFD700",
               }} 
             />
-            {/* Right Arrow Head */}
             <Text style={{ 
               position: "absolute", 
               left: force.kind === "Repulsive" ? a2X + atomR + arrowLength - 4 : a2X - arrowLength - atomR - 12,
@@ -637,7 +603,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
               {force.kind === "Repulsive" ? "▶" : "◀"}
             </Text>
 
-            {/* Atom 1 (Left) */}
             <View
               {...panResponder1.panHandlers}
               style={[
@@ -656,7 +621,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
               </LinearGradient>
             </View>
 
-            {/* Atom 2 (Right) */}
             <View
               {...panResponder2.panHandlers}
               style={[
@@ -675,7 +639,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
               </LinearGradient>
             </View>
 
-            {/* Interaction Status */}
             <View style={styles.canvasInteraction}>
               <Text style={[styles.canvasInteractionText, { color: interactionColor }]}>
                 Overall interaction: {interaction}
@@ -684,7 +647,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
           </View>
         </View>
 
-        {/* Instructions */}
         <View style={styles.instructions}>
           <Text style={styles.instructionsText}>
             💡 Seret atom untuk mengubah jarak dan lihat bagaimana gaya interaksi berubah.
@@ -692,7 +654,6 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
           </Text>
         </View>
 
-        {/* Bottom Buttons */}
         <View style={styles.bottomButtons}>
           <TouchableOpacity style={styles.backButton} onPress={onBack}>
             <Text style={styles.backButtonText}>Kembali</Text>
@@ -720,18 +681,16 @@ function SimulasiPembentukanIkatan({ pathway, onComplete, onBack }: { pathway: a
   );
 }
 
-// ============= MAIN SIMULATION VIEW =============
 export default function SimulationView({
   pathway,
   user,
   onComplete,
   onBack,
 }: SimulationViewProps) {
-  // Determine which simulation to show based on pathway title or content
   const isIkatanSimulation = 
     pathway.title?.toLowerCase().includes("pembentukan") ||
     pathway.title?.toLowerCase().includes("ikatan kimia") ||
-    pathway.order_number === 4; // Assuming order 4 is the bond formation simulation
+    pathway.order_number === 4; 
 
   if (isIkatanSimulation) {
     return <SimulasiPembentukanIkatan pathway={pathway} onComplete={onComplete} onBack={onBack} />;
@@ -976,7 +935,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
   },
-  // Simulasi Pembentukan Ikatan styles
   canvasContainer: {
     borderRadius: 12,
     overflow: "hidden",

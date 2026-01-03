@@ -19,7 +19,6 @@ export default function PathwayScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get current user
         const currentUser = await getCurrentUser();
         if (!currentUser) {
           router.replace("/login");
@@ -27,7 +26,6 @@ export default function PathwayScreen() {
         }
         setUser(currentUser);
 
-        // Fetch pathway
         const { data: pathwayData, error: pathwayError } = await supabase
           .from("pathways")
           .select("*")
@@ -37,7 +35,6 @@ export default function PathwayScreen() {
         if (pathwayError) throw pathwayError;
         setPathway(pathwayData);
 
-        // Create or update progress
         const { data: existingProgress, error: progressError } = await supabase
           .from("user_pathway_progress")
           .select("*")
@@ -75,7 +72,6 @@ export default function PathwayScreen() {
     try {
       console.log("[Pathway] Completing pathway:", pathway.id, "for user:", user.id);
       
-      // First check if progress exists
       const { data: existingProgress, error: fetchError } = await supabase
         .from("user_pathway_progress")
         .select("id, status")
@@ -95,7 +91,6 @@ export default function PathwayScreen() {
       }
 
       if (existingProgress) {
-        // Update existing record
         const { error: updateError } = await supabase
           .from("user_pathway_progress")
           .update(updateData)
@@ -107,7 +102,6 @@ export default function PathwayScreen() {
           console.log("[Pathway] Progress updated successfully");
         }
       } else {
-        // Insert new record
         const insertData = {
           user_id: user.id,
           pathway_id: pathway.id,
@@ -127,7 +121,6 @@ export default function PathwayScreen() {
         }
       }
 
-      // Find next pathway and navigate to it
       const { data: nextPathway } = await supabase
         .from("pathways")
         .select("id")
@@ -138,13 +131,11 @@ export default function PathwayScreen() {
         console.log("[Pathway] Navigating to next pathway:", nextPathway.id);
         router.replace(`/pathway/${nextPathway.id}`);
       } else {
-        // No more pathways, go back to dashboard
         console.log("[Pathway] No more pathways, going to dashboard");
         router.replace("/(tabs)");
       }
     } catch (err) {
       console.error("[Pathway] Error completing pathway:", err);
-      // Still navigate back even if there's an error
       router.replace("/(tabs)");
     }
   };
@@ -190,7 +181,6 @@ export default function PathwayScreen() {
     );
   }
 
-  // Render appropriate view based on pathway type
   const renderContent = () => {
     if (pathway.type === "simulation") {
       return (

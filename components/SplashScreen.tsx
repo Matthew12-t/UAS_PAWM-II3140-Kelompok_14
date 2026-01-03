@@ -4,12 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 
-// Prevent native splash screen from autohiding
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const { width, height } = Dimensions.get('window');
 
-// Floating chemistry icon component (matches login screen style)
 const FloatingIcon = ({
   emoji,
   size,
@@ -101,14 +99,10 @@ export default function CustomSplashScreen({ onFinish }: { onFinish: () => void 
   const subtitleOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Hide native splash immediately when custom splash mounts
     SplashScreen.hideAsync().catch(() => {});
     
-    // Small delay before starting animations
     const startDelay = setTimeout(() => {
-      // Animation sequence: logo appears → title → subtitle → finish
       Animated.sequence([
-        // Logo scale and fade in
         Animated.parallel([
           Animated.spring(logoScale, {
             toValue: 1,
@@ -122,20 +116,17 @@ export default function CustomSplashScreen({ onFinish }: { onFinish: () => void 
             useNativeDriver: true,
           }),
         ]),
-        // Title fade in
         Animated.timing(titleOpacity, {
           toValue: 1,
           duration: 500,
           useNativeDriver: true,
         }),
-        // Subtitle fade in
         Animated.timing(subtitleOpacity, {
           toValue: 1,
           duration: 500,
           useNativeDriver: true,
         }),
       ]).start(() => {
-        // Wait longer then hide splash (2 seconds total view time)
         setTimeout(() => {
           onFinish();
         }, 1500);
@@ -154,7 +145,6 @@ export default function CustomSplashScreen({ onFinish }: { onFinish: () => void 
     >
       <StatusBar style="light" />
 
-      {/* Floating Chemistry Icons */}
       <FloatingIcon emoji="⚗️" size={50} top={height * 0.08} left={30} delay={0} />
       <FloatingIcon emoji="🧪" size={40} top={height * 0.15} right={40} delay={200} />
       <FloatingIcon emoji="🔬" size={45} top={height * 0.25} left={50} delay={400} />
@@ -164,9 +154,7 @@ export default function CustomSplashScreen({ onFinish }: { onFinish: () => void 
       <FloatingIcon emoji="🌡️" size={38} bottom={height * 0.30} right={100} delay={150} />
       <FloatingIcon emoji="📊" size={42} bottom={height * 0.12} left={80} delay={250} />
 
-      {/* Main Content */}
       <View style={styles.content}>
-        {/* Logo / Icon */}
         <Animated.View
           style={[
             styles.logoContainer,
@@ -183,18 +171,15 @@ export default function CustomSplashScreen({ onFinish }: { onFinish: () => void 
           />
         </Animated.View>
 
-        {/* Title */}
         <Animated.Text style={[styles.title, { opacity: titleOpacity }]}>
           ChemLab Mobile
         </Animated.Text>
 
-        {/* Subtitle */}
         <Animated.Text style={[styles.subtitle, { opacity: subtitleOpacity }]}>
           Explore Chemistry Interactively
         </Animated.Text>
       </View>
 
-      {/* Loading indicator */}
       <View style={styles.loadingContainer}>
         <View style={styles.loadingDots}>
           <LoadingDot delay={0} />
@@ -206,7 +191,6 @@ export default function CustomSplashScreen({ onFinish }: { onFinish: () => void 
   );
 }
 
-// Animated loading dot
 const LoadingDot = ({ delay }: { delay: number }) => {
   const opacity = useRef(new Animated.Value(0.3)).current;
 
