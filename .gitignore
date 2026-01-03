@@ -37,3 +37,5 @@ yarn-error.*
 # native folders
 /ios
 /android
+
+.vercel

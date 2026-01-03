@@ -16,7 +16,7 @@ const getRedirectUrl = () => {
     if (typeof window !== 'undefined') {
       return `${window.location.origin}/auth/callback`;
     }
-    return 'http://localhost:8081/auth/callback';
+    return 'https://chemlab-kelompok14.vercel.app/auth/callback';
   }
   return AuthSession.makeRedirectUri({
     scheme: 'chemlab',
