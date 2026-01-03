@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Alert, Animated, Easing, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Animated, Easing, Image, Modal, Platform, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { Input } from "../components/ui/input";
@@ -81,6 +81,7 @@ export default function SignupScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const router = useRouter();
 
   // Email validation
@@ -131,12 +132,16 @@ export default function SignupScreen() {
         setError(signupError.message);
         setLoading(false);
       } else {
-        Alert.alert(
-          "Success!",
-          "Account created successfully. Please check your email for verification.",
-          [{ text: "OK", onPress: () => router.replace("/login") }]
-        );
         setLoading(false);
+        if (Platform.OS === 'web') {
+          setShowSuccessModal(true);
+        } else {
+          Alert.alert(
+            "Success!",
+            "Account created successfully. Please check your email for verification.",
+            [{ text: "OK", onPress: () => router.replace("/login") }]
+          );
+        }
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
@@ -173,6 +178,84 @@ export default function SignupScreen() {
       end={{ x: 1, y: 1 }}
       style={{ flex: 1 }}
     >
+      <Modal
+        visible={showSuccessModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => {
+          setShowSuccessModal(false);
+          router.replace("/login");
+        }}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 20,
+        }}>
+          <View style={{
+            backgroundColor: "white",
+            borderRadius: 16,
+            padding: 24,
+            width: "100%",
+            maxWidth: 340,
+            alignItems: "center",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.25,
+            shadowRadius: 12,
+            elevation: 10,
+          }}>
+            <View style={{
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+              backgroundColor: "#dcfce7",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 16,
+            }}>
+              <Text style={{ fontSize: 28 }}>✓</Text>
+            </View>
+            <Text style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              color: "#1f2937",
+              marginBottom: 8,
+              textAlign: "center",
+            }}>
+              Success!
+            </Text>
+            <Text style={{
+              fontSize: 14,
+              color: "#6b7280",
+              textAlign: "center",
+              marginBottom: 20,
+              lineHeight: 20,
+            }}>
+              Account created successfully. Please check your email for verification.
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setShowSuccessModal(false);
+                router.replace("/login");
+              }}
+              style={{
+                backgroundColor: "#6366f1",
+                borderRadius: 8,
+                paddingVertical: 12,
+                paddingHorizontal: 32,
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 16, fontWeight: "600" }}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <View style={{ position: "absolute", width: "100%", height: "100%" }} pointerEvents="none">
         <FloatingIcon emoji="⚛️" size={56} top={30} left={15} delay={0} />
         <FloatingIcon emoji="🧪" size={44} top={100} right={15} delay={1000} />
