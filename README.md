@@ -1,14 +1,7 @@
-# ChemLab Mobile 🧪📱
+# 🧪 ChemLab - Final Project II3140
 
-Aplikasi pembelajaran kimia berbasis mobile dan web yang interaktif, dikembangkan sebagai proyek **Ujian Akhir Semester (UAS)** mata kuliah **Pengembangan Aplikasi Web dan Mobile (II3140)**.
-
-## 📋 Informasi Proyek
-
-| | |
-|---|---|
-| **Mata Kuliah** | Pengembangan Aplikasi Web dan Mobile (II3140) |
-| **Kelompok** | 14 |
-| **Tahun** | 2025/2026 |
+Aplikasi pembelajaran kimia berbasis mobile dan web yang interaktif, dikembangkan sebagai proyek **Ujian Akhir Semester (UAS)** mata kuliah **II3140 - Pengembangan Aplikasi Web dan Mobile**.
+Dibuat oleh Kelompok 14 K02
 
 ### 👥 Anggota Kelompok
 
@@ -21,7 +14,7 @@ Aplikasi pembelajaran kimia berbasis mobile dan web yang interaktif, dikembangka
 
 ## 📖 Deskripsi Aplikasi
 
-**ChemLab Mobile** adalah aplikasi pembelajaran kimia yang dirancang untuk membantu pengguna mempelajari konsep-konsep kimia melalui pembelajaran interaktif. Aplikasi ini menyediakan:
+**ChemLab Mobile** adalah aplikasi virtual lab pembelajaran kimia yang dirancang untuk membantu pengguna mempelajari konsep-konsep kimia melalui pembelajaran interaktif. Aplikasi ini menyediakan:
 
 - 📚 **Pathway Pembelajaran** - Jalur belajar terstruktur dengan berbagai topik kimia
 - ✍️ **Quiz Interaktif** - Latihan soal untuk menguji pemahaman
@@ -34,11 +27,11 @@ Aplikasi pembelajaran kimia berbasis mobile dan web yang interaktif, dikembangka
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **React Native** (v0.81.5) - Framework utama untuk pengembangan cross-platform
-- **Expo** (~54.0.0) - Platform untuk mempermudah development React Native
-- **Expo Router** (~6.0.0) - File-based routing untuk navigasi
-- **NativeWind** (v4.2.1) - Tailwind CSS untuk React Native
-- **TypeScript** (~5.9.0) - Type-safe JavaScript
+- **React Native** - Framework utama untuk pengembangan cross-platform
+- **Expo** - Platform untuk mempermudah development React Native
+- **Expo Router** - File-based routing untuk navigasi
+- **NativeWind** - Tailwind CSS untuk React Native
+- **TypeScript** - Type-safe JavaScript
 
 ### Backend & Database
 - **Supabase** - Backend-as-a-Service untuk:
@@ -55,44 +48,6 @@ Aplikasi pembelajaran kimia berbasis mobile dan web yang interaktif, dikembangka
 - **Expo AV** - Audio/Video support
 - **Async Storage** - Penyimpanan data lokal
 - **Expo Auth Session** - Autentikasi OAuth
-
----
-
-## 📂 Struktur Proyek
-
-```
-├── app/                      # Routing & Screens (Expo Router)
-│   ├── _layout.tsx          # Root layout
-│   ├── index.tsx            # Splash/Auth check screen
-│   ├── login.tsx            # Halaman login
-│   ├── signup.tsx           # Halaman registrasi
-│   ├── (tabs)/              # Tab navigation
-│   │   ├── index.tsx        # Dashboard utama
-│   │   ├── about.tsx        # Halaman tentang aplikasi
-│   │   ├── results.tsx      # Hasil pembelajaran
-│   │   └── settings.tsx     # Pengaturan
-│   ├── auth/
-│   │   └── callback.tsx     # OAuth callback handler
-│   └── pathway/
-│       └── [id].tsx         # Dynamic pathway screen
-├── assets/                   # Aset statis
-│   ├── audio/               # File audio
-│   └── images/              # Gambar dan ikon
-├── components/              # Reusable components
-│   ├── pathway/             # Komponen pathway
-│   │   ├── topic-view.tsx
-│   │   ├── quiz-view.tsx
-│   │   ├── simulation-view.tsx
-│   │   └── final-test-view.tsx
-│   └── ui/                  # Komponen UI dasar
-│       ├── button.tsx
-│       ├── card.tsx
-│       └── input.tsx
-└── lib/                     # Utilities & Contexts
-    ├── supabase.ts          # Supabase client configuration
-    ├── AudioContext.tsx     # Audio state management
-    └── ThemeContext.tsx     # Theme management
-```
 
 ---
 
@@ -165,22 +120,3 @@ Aplikasi pembelajaran kimia berbasis mobile dan web yang interaktif, dikembangka
 - Manajemen akun
 
 ---
-
-## 📄 Lisensi
-
-Proyek ini dibuat untuk keperluan akademik mata kuliah II3140 - Pengembangan Aplikasi Web dan Mobile, Institut Teknologi Bandung.
-
----
-
-## 🙏 Acknowledgments
-
-- Dosen pengampu mata kuliah II3140
-- Asisten praktikum
-- Tim Supabase untuk backend services
-- Komunitas Expo dan React Native
-
----
-
-<p align="center">
-   by Kelompok 14 - II3140
-</p>
